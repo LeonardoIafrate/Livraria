@@ -1,10 +1,8 @@
-namespace api.Models
+namespace api.Dtos.Editora
 {
-    public class Editora
+    public class EditoraDto
     {
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty;
-
-        public List<Livro> Livros {get; set;} = new();
     }
 }
