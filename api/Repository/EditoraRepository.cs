@@ -51,7 +51,7 @@ namespace api.Repository
             return await _dbContext.Editora.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<Editora?> GetByNomeAsync(string nome)
+        public async Task<Editora?> GetByNameAsync(string nome)
         {
             return await _dbContext.Editora.FirstOrDefaultAsync(e => e.Nome == nome);
         }
@@ -59,6 +59,13 @@ namespace api.Repository
         public async Task<bool> PossuiLivrosAsync(int id)
         {
             return await _dbContext.Livro.AnyAsync(l => l.EditoraId == id);
+        }
+
+        public async Task<List<Editora>> SearchByNameAsync(string nome)
+        {
+            var termo = nome.Trim();
+
+            return await _dbContext.Editora.AsNoTracking().Where(e => e.Nome.Contains(termo)).OrderBy(e =>e.Nome).ToListAsync();
         }
 
         public async Task<Editora?> UpdateAsync(int id, Editora editora)

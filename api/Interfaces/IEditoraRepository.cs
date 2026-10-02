@@ -6,7 +6,8 @@ namespace api.Interfaces
     {
         Task<List<Editora>> GetAllAsync();
         Task<Editora?> GetByIdAsync(int id);
-        Task<Editora?> GetByNomeAsync(string nome);
+        Task<List<Editora>> SearchByNameAsync(string nome);
+        Task<Editora?> GetByNameAsync(string nome);
         Task<Editora> CreateAsync(Editora editoraModel);
         Task<Editora?> UpdateAsync(int id, Editora editora);
         Task<Editora?> DeleteAsync(int id);

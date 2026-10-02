@@ -166,3 +166,4 @@ C:\Users\leona\OneDrive\Documents\Leo\Estudo\C#\Projetos\Livraria\api\obj\Debug\
 C:\Users\leona\OneDrive\Documents\Leo\Estudo\C#\Projetos\Livraria\api\obj\Debug\net10.0\api.pdb
 C:\Users\leona\OneDrive\Documents\Leo\Estudo\C#\Projetos\Livraria\api\obj\Debug\net10.0\api.genruntimeconfig.cache
 C:\Users\leona\OneDrive\Documents\Leo\Estudo\C#\Projetos\Livraria\api\obj\Debug\net10.0\ref\api.dll
+C:\Users\leona\OneDrive\Documents\Leo\Estudo\C#\Projetos\Livraria\api\obj\Debug\net10.0\api.sourcelink.json
