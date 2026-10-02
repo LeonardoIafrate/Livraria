@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,60 @@ namespace api.Repository
         {
             _dbContext = dbContext;
         }
+
+        public async Task<PagedResult<Livro>> GetAllAsync(LivroQueryObject query)
+        {
+            var livros = _dbContext.Livro.AsNoTracking().Include(l => l.Editora).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Nome))
+            {
+                var termo = query.Nome.Trim();
+                livros = livros.Where(l => l.Nome.Contains(termo));
+            }
+
+            if(query.EditoraId.HasValue)
+                livros = livros.Where(l => l.EditoraId == query.EditoraId.Value);
+
+            if(query.PrecoMin.HasValue)
+                livros = livros.Where(l => l.Preco >= query.PrecoMin.Value);
+
+            if(query.PrecoMax.HasValue)
+                livros = livros.Where(l => l.Preco <= query.PrecoMax.Value);
+
+            var total = await livros.CountAsync();
+
+            var itens = await livros
+                .OrderBy(l => l.Nome)
+                .ThenBy(l => l.Id)
+                .Skip((query.Pagina - 1) * query.TamanhoPagina)
+                .Take(query.TamanhoPagina)
+                .ToListAsync();
+            
+            return new PagedResult<Livro>(itens, total, query.Pagina, query.TamanhoPagina);
+        }
+
+        public async Task<Livro?> GetByIdAsync(int id)
+        {
+            return await _dbContext.Livro.Include(l => l.Editora).FirstOrDefaultAsync(l => l.Id == id);
+        }
+
+        public async Task<Livro?> GetByIsbnAsync(string isbn)
+        {
+            return await _dbContext.Livro.Include(l => l.Editora).FirstOrDefaultAsync(l => l.Isbn == isbn);
+        }
+
+        public async Task<List<Livro>> SearchByNameAsync(string nome)
+        {
+            var termo = nome.Trim();
+
+            return await _dbContext.Livro
+                   .AsNoTracking()
+                   .Include(l => l.Editora)
+                   .Where(l => l.Nome.Contains(termo))
+                   .OrderBy(l => l.Nome)
+                   .ToListAsync();
+        }
+
         public async Task<Livro> CreateAsync(Livro livroModel)
         {
             await _dbContext.Livro.AddAsync(livroModel);
@@ -41,33 +96,6 @@ namespace api.Repository
         public async Task<bool> ExistsAsync(int id)
         {
             return await _dbContext.Livro.AnyAsync(l => l.Id == id);
-        }
-
-        public async Task<List<Livro>> GetAllAsync()
-        {
-            return await _dbContext.Livro.AsNoTracking().Include(l => l.Editora).OrderBy(l => l.Nome).ToListAsync();
-        }
-
-        public async Task<Livro?> GetByIdAsync(int id)
-        {
-            return await _dbContext.Livro.Include(l => l.Editora).FirstOrDefaultAsync(l => l.Id == id);
-        }
-
-        public async Task<Livro?> GetByIsbnAsync(string isbn)
-        {
-            return await _dbContext.Livro.Include(l => l.Editora).FirstOrDefaultAsync(l => l.Isbn == isbn);
-        }
-
-        public async Task<List<Livro>> SearchByNameAsync(string nome)
-        {
-            var termo = nome.Trim();
-
-            return await _dbContext.Livro
-                   .AsNoTracking()
-                   .Include(l => l.Editora)
-                   .Where(l => l.Nome.Contains(termo))
-                   .OrderBy(l => l.Nome)
-                   .ToListAsync();
         }
 
         public async Task<Livro?> UpdateAsync(int id, Livro livroModel)

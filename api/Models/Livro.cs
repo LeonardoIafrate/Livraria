@@ -9,7 +9,7 @@ namespace api.Models
         public string Isbn{ get; set; } = string.Empty;
         public decimal Preco { get; set; }
         public int? NumeroPaginas { get; set; }
-        public string Idioma { get; set; } = string.Empty;
+        public string? Idioma { get; set; }
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
         public int EditoraId { get; set; }
         public Editora Editora { get; set; } = null!;

@@ -11,7 +11,7 @@ namespace api.Dtos.Livro
         public int? NumeroPaginas { get; set; }
         public string? Idioma { get; set; }
         public DateTime DataCadastro { get; set; }
-
         public int EditoraId { get; set; }
+        public string EditoraNome { get; set; } = string.Empty;
     }
 }

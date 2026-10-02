@@ -1,10 +1,11 @@
+using api.Helpers;
 using api.Models;
 
 namespace api.Interfaces
 {
     public interface ILivroRepository
     {
-        Task<List<Livro>> GetAllAsync();
+        Task<PagedResult<Livro>> GetAllAsync(LivroQueryObject query);
         Task<Livro?> GetByIdAsync(int id);
         Task<List<Livro>> SearchByNameAsync(string nome);
         Task<Livro?> GetByIsbnAsync(string isbn);
