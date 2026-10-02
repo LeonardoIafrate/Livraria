@@ -9,8 +9,8 @@ namespace api.Data
         {
         }
 
-        public DbSet<Editora> Editoras => Set<Editora>();
-        public DbSet<Livro> Livros =>Set<Livro>();
+        public DbSet<Editora> Editora => Set<Editora>();
+        public DbSet<Livro> Livro =>Set<Livro>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
