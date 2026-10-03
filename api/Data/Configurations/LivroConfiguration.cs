@@ -37,7 +37,24 @@ namespace api.Data.Configurations
                    .WithMany(e => e.Livros)
                    .HasForeignKey(l => l.EditoraId)
                    .OnDelete(DeleteBehavior.Restrict);
-        
+            
+            builder.HasMany(l =>l.Categorias)
+                   .WithMany(c => c.Livros)
+                   .UsingEntity<Dictionary<string, object>>(
+                     "LivroCategoria",
+                     j => j.HasOne<Categoria>()
+                           .WithMany()
+                           .HasForeignKey("CategoriaId")
+                           .OnDelete(DeleteBehavior.Restrict),
+                     j => j.HasOne<Livro>()
+                           .WithMany()
+                           .HasForeignKey("LivroId")
+                           .OnDelete(DeleteBehavior.Cascade),
+                     j =>
+                     {
+                            j.HasKey("LivroId", "CategoriaId");
+                            j.ToTable("LivroCategoria");
+                     }); 
         }
     }
 }

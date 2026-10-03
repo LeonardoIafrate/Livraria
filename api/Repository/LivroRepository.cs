@@ -32,6 +32,9 @@ namespace api.Repository
             if(query.EditoraId.HasValue)
                 livros = livros.Where(l => l.EditoraId == query.EditoraId.Value);
 
+            if(query.CategoriaId.HasValue)
+                livros = livros.Where(l => l.Categorias.Any(c => c.Id == query.CategoriaId.Value));
+
             if(query.PrecoMin.HasValue)
                 livros = livros.Where(l => l.Preco >= query.PrecoMin.Value);
 
