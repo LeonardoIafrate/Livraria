@@ -46,7 +46,10 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Livro", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AnoLancamento")
                         .HasColumnType("int");
@@ -58,7 +61,6 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Idioma")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -84,6 +86,8 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EditoraId");
+
                     b.HasIndex("Isbn")
                         .IsUnique();
 
@@ -101,7 +105,7 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Editora", "Editora")
                         .WithMany("Livros")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("EditoraId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

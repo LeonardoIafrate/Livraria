@@ -35,7 +35,7 @@ namespace api.Data.Configurations
             
             builder.HasOne(l => l.Editora)
                    .WithMany(e => e.Livros)
-                   .HasForeignKey(l => l.Id)
+                   .HasForeignKey(l => l.EditoraId)
                    .OnDelete(DeleteBehavior.Restrict);
         
         }
