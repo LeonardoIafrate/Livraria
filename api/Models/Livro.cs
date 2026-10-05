@@ -16,5 +16,7 @@ namespace api.Models
         public Editora Editora { get; set; } = null!;
 
         public List<Categoria> Categorias { get; set; } = new();
+
+        public List<Autor> Autor { get; set; } = new();
     }
 }

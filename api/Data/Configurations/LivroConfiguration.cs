@@ -55,6 +55,25 @@ namespace api.Data.Configurations
                             j.HasKey("LivroId", "CategoriaId");
                             j.ToTable("LivroCategoria");
                      }); 
+
+              builder.HasMany(l => l.Autor)
+                     .WithMany(a => a.Livros)
+                     .UsingEntity<Dictionary<string, object>>(
+                            "LivroAutor",
+                            j => j.HasOne<Autor>()
+                                  .WithMany()
+                                  .HasForeignKey("AutorId")
+                                  .OnDelete(DeleteBehavior.Restrict),
+                            j => j.HasOne<Livro>()
+                                  .WithMany()
+                                  .HasForeignKey("LivroId")
+                                  .OnDelete(DeleteBehavior.Cascade),
+                            j =>
+                            {
+                                   j.HasKey("LivroId", "AutorId");
+                                   j.ToTable("LivroAutor");
+                            }
+                     );
         }
     }
 }
