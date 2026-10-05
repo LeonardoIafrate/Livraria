@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Data;
 using api.Helpers;
 using api.Interfaces;
@@ -21,7 +17,7 @@ namespace api.Repository
 
         public async Task<PagedResult<Livro>> GetAllAsync(LivroQueryObject query)
         {
-            var livros = _dbContext.Livro.AsNoTracking().Include(l => l.Editora).AsQueryable();
+            var livros = _dbContext.Livro.AsNoTracking().Include(l => l.Editora).Include(l => l.Categorias).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Nome))
             {
@@ -55,12 +51,12 @@ namespace api.Repository
 
         public async Task<Livro?> GetByIdAsync(int id)
         {
-            return await _dbContext.Livro.Include(l => l.Editora).FirstOrDefaultAsync(l => l.Id == id);
+            return await _dbContext.Livro.Include(l => l.Editora).Include(l => l.Categorias).FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task<Livro?> GetByIsbnAsync(string isbn)
         {
-            return await _dbContext.Livro.Include(l => l.Editora).FirstOrDefaultAsync(l => l.Isbn == isbn);
+            return await _dbContext.Livro.Include(l => l.Editora).Include(l => l.Categorias).FirstOrDefaultAsync(l => l.Isbn == isbn);
         }
 
         public async Task<List<Livro>> SearchByNameAsync(string nome)
@@ -70,6 +66,7 @@ namespace api.Repository
             return await _dbContext.Livro
                    .AsNoTracking()
                    .Include(l => l.Editora)
+                   .Include(l => l.Categorias)
                    .Where(l => l.Nome.Contains(termo))
                    .OrderBy(l => l.Nome)
                    .ToListAsync();
@@ -103,7 +100,7 @@ namespace api.Repository
 
         public async Task<Livro?> UpdateAsync(int id, Livro livroModel)
         {
-            var livroExistente = await _dbContext.Livro.FirstOrDefaultAsync(l => l.Id == id);
+            var livroExistente = await _dbContext.Livro.Include(l => l.Categorias).FirstOrDefaultAsync(l => l.Id == id);
 
             if(livroExistente == null)
                 return null;
@@ -116,6 +113,10 @@ namespace api.Repository
             livroExistente.NumeroPaginas = livroModel.NumeroPaginas;
             livroExistente.Idioma = livroModel.Idioma;
             livroExistente.EditoraId = livroModel.EditoraId;
+
+            livroExistente.Categorias.Clear();
+            foreach (var categoria in livroModel.Categorias)
+                livroExistente.Categorias.Add(categoria);
 
             await _dbContext.SaveChangesAsync();
             await _dbContext.Entry(livroExistente).Reference(l => l.Editora).LoadAsync();

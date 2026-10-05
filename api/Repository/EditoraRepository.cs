@@ -13,6 +13,32 @@ namespace api.Repository
         {
             _dbContext = dbContext;
         }
+
+        public async Task<List<Editora>> GetAllAsync()
+        {
+            return await _dbContext.Editora
+                   .AsNoTracking()
+                   .OrderBy(e => e.Nome)
+                   .ToListAsync();
+        }
+
+        public async Task<Editora?> GetByIdAsync(int id)
+        {
+            return await _dbContext.Editora.FirstOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task<Editora?> GetByNameAsync(string nome)
+        {
+            return await _dbContext.Editora.FirstOrDefaultAsync(e => e.Nome == nome);
+        }
+
+        public async Task<List<Editora>> SearchByNameAsync(string nome)
+        {
+            var termo = nome.Trim();
+
+            return await _dbContext.Editora.AsNoTracking().Where(e => e.Nome.Contains(termo)).OrderBy(e =>e.Nome).ToListAsync();
+        }
+
         public async Task<Editora> CreateAsync(Editora editoraModel)
         {
             await _dbContext.Editora.AddAsync(editoraModel);
@@ -38,34 +64,9 @@ namespace api.Repository
             return await _dbContext.Editora.AnyAsync(e => e.Id == id);
         }
 
-        public async Task<List<Editora>> GetAllAsync()
-        {
-            return await _dbContext.Editora
-                   .AsNoTracking()
-                   .OrderBy(e => e.Nome)
-                   .ToListAsync();
-        }
-
-        public async Task<Editora?> GetByIdAsync(int id)
-        {
-            return await _dbContext.Editora.FirstOrDefaultAsync(e => e.Id == id);
-        }
-
-        public async Task<Editora?> GetByNameAsync(string nome)
-        {
-            return await _dbContext.Editora.FirstOrDefaultAsync(e => e.Nome == nome);
-        }
-
         public async Task<bool> PossuiLivrosAsync(int id)
         {
             return await _dbContext.Livro.AnyAsync(l => l.EditoraId == id);
-        }
-
-        public async Task<List<Editora>> SearchByNameAsync(string nome)
-        {
-            var termo = nome.Trim();
-
-            return await _dbContext.Editora.AsNoTracking().Where(e => e.Nome.Contains(termo)).OrderBy(e =>e.Nome).ToListAsync();
         }
 
         public async Task<Editora?> UpdateAsync(int id, Editora editora)

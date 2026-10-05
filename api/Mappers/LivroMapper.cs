@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Livro;
 using api.Models;
 using api.Helpers;
@@ -24,7 +20,11 @@ namespace api.Mappers
                 Idioma = livro.Idioma,
                 DataCadastro = livro.DataCadastro,
                 EditoraId = livro.EditoraId,
-                EditoraNome = livro.Editora?.Nome?? string.Empty
+                EditoraNome = livro.Editora?.Nome?? string.Empty,
+                Generos = livro.Categorias
+                    .Select(c => c.Genero)
+                    .OrderBy(g => g)
+                    .ToList()
             };
         }
 
@@ -57,5 +57,6 @@ namespace api.Mappers
                 EditoraId = dto.EditoraId
             };
         }
+        
     }
 }

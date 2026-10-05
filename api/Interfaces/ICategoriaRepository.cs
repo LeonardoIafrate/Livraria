@@ -5,10 +5,10 @@ namespace api.Interfaces
 {
     public interface ICategoriaRepository
     {
-            Task<PagedResult<Categoria>> GetAllAsync();
+            Task<List<Categoria>> GetAllAsync();
             Task<Categoria?> GetByIdAsync(int id);
-            Task<List<Categoria>> SearchByNameAsync(string nome);
-            Task<Categoria?> GetByNameAsync(string nome);
+            Task<List<Categoria>> SearchByGeneroAsync(string genero);
+            Task<Categoria?> GetByGeneroAsync(string genero);
             Task<Categoria> CreateAsync(Categoria categoria);
             Task<Categoria?> UpdateAsync(int id, Categoria categoria);
             Task<Categoria?> DeleteAsync(int id);
