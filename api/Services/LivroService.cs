@@ -15,11 +15,13 @@ namespace api.Services
     {
         private readonly ILivroRepository _livroRepo;
         private readonly IEditoraRepository _editoraRepo;
+        private readonly ICategoriaRepository _categoriaRepo;
 
-        public LivroService(ILivroRepository livroRepo, IEditoraRepository editoraRepo)
+        public LivroService(ILivroRepository livroRepo, IEditoraRepository editoraRepo, ICategoriaRepository categoriaRepo)
         {
             _livroRepo = livroRepo;
             _editoraRepo = editoraRepo;
+            _categoriaRepo = categoriaRepo;
         }
 
         public async Task<PagedResult<LivroDto>> GetAllAsync(LivroQueryObject query)
@@ -61,6 +63,8 @@ namespace api.Services
             if(isbnEmUso != null)
                 throw new ConflictException("Já existe outro livro cadastrado com esse ISBN.");
 
+            livroModel.Categorias = await ObterCategoriasAsync(createDto.CategoriaIds);
+
             var criado = await _livroRepo.CreateAsync(livroModel);
             return criado.ToLivroDto();
         }
@@ -80,6 +84,8 @@ namespace api.Services
             if(isbnEmUso != null && isbnEmUso.Id != id)
                 throw new ConflictException("Já existe outro livro cadastrado com esse ISBN.");
             
+            livroModel.Categorias = await ObterCategoriasAsync(updateDto.CategoriaIds);
+
             var atualizado = await _livroRepo.UpdateAsync(id, livroModel);
             
             if(atualizado == null)
@@ -96,6 +102,24 @@ namespace api.Services
                 throw new NotFoundException("Livro não encontrado.");
             
             await _livroRepo.DeleteAsync(id);
+        }
+
+        public async Task<List<Categoria>> ObterCategoriasAsync(List<int> categoriaIds)
+        {
+            var ids = categoriaIds.Distinct().ToList();
+
+            if(ids.Count == 0)
+                return new List<Categoria>();
+
+            var categorias = await _categoriaRepo.GetByIdsAsync(ids);
+
+            if(categorias.Count != ids.Count)
+            {
+                var inexistentes = ids.Except(categorias.Select(c => c.Id));
+                throw new BadRequestException($"Categorias inexistentes: {string.Join(", ", inexistentes)}.");
+            }
+
+            return categorias;
         }
 
     }

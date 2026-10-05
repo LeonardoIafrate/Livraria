@@ -34,6 +34,6 @@ namespace api.Dtos.Livro
         [Range(1, int.MaxValue, ErrorMessage = "")]
         public int EditoraId { get; set; }
 
-        public List<int> CategoriasId{ get; set; } = new();
+        public List<int> CategoriaIds{ get; set; } = new();
     }
 }
