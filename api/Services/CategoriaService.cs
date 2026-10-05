@@ -52,7 +52,7 @@ namespace api.Services
 
             var categoriaEmUso = await _categoriaRepo.GetByGeneroAsync(categoriaModel.Genero);
             if(categoriaEmUso != null)
-                throw new ConflictException($"O Gênero {categoriaEmUso} já existe.");
+                throw new ConflictException($"O Gênero {categoriaEmUso.Genero} já existe.");
 
             var criada = await _categoriaRepo.CreateAsync(categoriaModel);
             return criada.ToCategoriaDto();
@@ -68,7 +68,7 @@ namespace api.Services
             
             var categoriaEmUso = await _categoriaRepo.GetByGeneroAsync(categoriaModel.Genero);
             if(categoriaEmUso != null)
-                throw new ConflictException($"O Gênero {categoriaEmUso} já existe.");
+                throw new ConflictException($"O Gênero {categoriaEmUso.Genero} já existe.");
 
             var atualizada = await _categoriaRepo.UpdateAsync(id, categoriaModel);
             if(atualizada == null)
