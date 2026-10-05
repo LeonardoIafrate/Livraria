@@ -19,6 +19,10 @@ namespace api.Mappers
                 NumeroPaginas = livro.NumeroPaginas,
                 Idioma = livro.Idioma,
                 DataCadastro = livro.DataCadastro,
+                Autores = livro.Autores
+                    .Select(a => a.Nome)
+                    .OrderBy(n => n)
+                    .ToList(),
                 EditoraId = livro.EditoraId,
                 EditoraNome = livro.Editora?.Nome?? string.Empty,
                 Generos = livro.Categorias

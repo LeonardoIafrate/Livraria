@@ -10,7 +10,7 @@ namespace api.Interfaces
     {
         Task<List<Autor>> GetAllAsync();
         Task<Autor?> GetByIdAsync(int id);
-        Task<Autor?> GetByNomeAsync(string nome);
+        Task<List<Autor>> GetByIdsAsync(List<int> ids);
         Task<List<Autor>> SearchByNomeAsync(string nome);
         Task<Autor> CreateAsync(Autor autor);
         Task<Autor?> UpdateAsync(int id, Autor autor);

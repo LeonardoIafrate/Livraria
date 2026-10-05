@@ -17,7 +17,7 @@ namespace api.Repository
 
         public async Task<PagedResult<Livro>> GetAllAsync(LivroQueryObject query)
         {
-            var livros = _dbContext.Livro.AsNoTracking().Include(l => l.Editora).Include(l => l.Categorias).AsQueryable();
+            var livros = _dbContext.Livro.AsNoTracking().Include(l => l.Autores).Include(l => l.Editora).Include(l => l.Categorias).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Nome))
             {
@@ -30,6 +30,9 @@ namespace api.Repository
 
             if(query.CategoriaId.HasValue)
                 livros = livros.Where(l => l.Categorias.Any(c => c.Id == query.CategoriaId.Value));
+            
+            if(query.AutorId.HasValue)
+                livros = livros.Where(l => l.Autores.Any(a => a.Id == query.AutorId.Value));
 
             if(query.PrecoMin.HasValue)
                 livros = livros.Where(l => l.Preco >= query.PrecoMin.Value);
@@ -51,12 +54,20 @@ namespace api.Repository
 
         public async Task<Livro?> GetByIdAsync(int id)
         {
-            return await _dbContext.Livro.Include(l => l.Editora).Include(l => l.Categorias).FirstOrDefaultAsync(l => l.Id == id);
+            return await _dbContext.Livro
+                                    .Include(l => l.Autores)
+                                    .Include(l => l.Editora)
+                                    .Include(l => l.Categorias)
+                                    .FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task<Livro?> GetByIsbnAsync(string isbn)
         {
-            return await _dbContext.Livro.Include(l => l.Editora).Include(l => l.Categorias).FirstOrDefaultAsync(l => l.Isbn == isbn);
+            return await _dbContext.Livro
+                                   .Include(l => l.Autores)
+                                   .Include(l => l.Editora)
+                                   .Include(l => l.Categorias)
+                                   .FirstOrDefaultAsync(l => l.Isbn == isbn);
         }
 
         public async Task<List<Livro>> SearchByNameAsync(string nome)
@@ -65,6 +76,7 @@ namespace api.Repository
 
             return await _dbContext.Livro
                    .AsNoTracking()
+                   .Include(l => l.Autores)
                    .Include(l => l.Editora)
                    .Include(l => l.Categorias)
                    .Where(l => l.Nome.Contains(termo))
@@ -79,6 +91,36 @@ namespace api.Repository
 
             await _dbContext.Entry(livroModel).Reference(l => l.Editora).LoadAsync();
             return livroModel;
+        }
+
+        public async Task<Livro?> UpdateAsync(int id, Livro livroModel)
+        {
+            var livroExistente = await _dbContext.Livro.Include(l => l.Autores).Include(l => l.Categorias).FirstOrDefaultAsync(l => l.Id == id);
+
+            if(livroExistente == null)
+                return null;
+            
+            livroExistente.Nome = livroModel.Nome;
+            livroExistente.Sinopse = livroModel.Sinopse;
+            livroExistente.AnoLancamento = livroModel.AnoLancamento;
+            livroExistente.Isbn = livroModel.Isbn;
+            livroExistente.Preco = livroModel.Preco;
+            livroExistente.NumeroPaginas = livroModel.NumeroPaginas;
+            livroExistente.Idioma = livroModel.Idioma;
+            livroExistente.EditoraId = livroModel.EditoraId;
+
+            livroExistente.Autores.Clear();
+            foreach (var autor in livroModel.Autores)
+                livroExistente.Autores.Add(autor);
+
+            livroExistente.Categorias.Clear();
+            foreach (var categoria in livroModel.Categorias)
+                livroExistente.Categorias.Add(categoria);
+
+            await _dbContext.SaveChangesAsync();
+            await _dbContext.Entry(livroExistente).Reference(l => l.Editora).LoadAsync();
+            return livroExistente;
+            
         }
 
         public async Task<Livro?> DeleteAsync(int id)
@@ -96,32 +138,6 @@ namespace api.Repository
         public async Task<bool> ExistsAsync(int id)
         {
             return await _dbContext.Livro.AnyAsync(l => l.Id == id);
-        }
-
-        public async Task<Livro?> UpdateAsync(int id, Livro livroModel)
-        {
-            var livroExistente = await _dbContext.Livro.Include(l => l.Categorias).FirstOrDefaultAsync(l => l.Id == id);
-
-            if(livroExistente == null)
-                return null;
-            
-            livroExistente.Nome = livroModel.Nome;
-            livroExistente.Sinopse = livroModel.Sinopse;
-            livroExistente.AnoLancamento = livroModel.AnoLancamento;
-            livroExistente.Isbn = livroModel.Isbn;
-            livroExistente.Preco = livroModel.Preco;
-            livroExistente.NumeroPaginas = livroModel.NumeroPaginas;
-            livroExistente.Idioma = livroModel.Idioma;
-            livroExistente.EditoraId = livroModel.EditoraId;
-
-            livroExistente.Categorias.Clear();
-            foreach (var categoria in livroModel.Categorias)
-                livroExistente.Categorias.Add(categoria);
-
-            await _dbContext.SaveChangesAsync();
-            await _dbContext.Entry(livroExistente).Reference(l => l.Editora).LoadAsync();
-            return livroExistente;
-            
         }
     }
 }

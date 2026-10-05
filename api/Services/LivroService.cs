@@ -16,12 +16,14 @@ namespace api.Services
         private readonly ILivroRepository _livroRepo;
         private readonly IEditoraRepository _editoraRepo;
         private readonly ICategoriaRepository _categoriaRepo;
+        private readonly IAutorRepository _autorRepo;
 
-        public LivroService(ILivroRepository livroRepo, IEditoraRepository editoraRepo, ICategoriaRepository categoriaRepo)
+        public LivroService(ILivroRepository livroRepo, IEditoraRepository editoraRepo, ICategoriaRepository categoriaRepo, IAutorRepository autorRepo)
         {
             _livroRepo = livroRepo;
             _editoraRepo = editoraRepo;
             _categoriaRepo = categoriaRepo;
+            _autorRepo = autorRepo;
         }
 
         public async Task<PagedResult<LivroDto>> GetAllAsync(LivroQueryObject query)
@@ -65,6 +67,8 @@ namespace api.Services
 
             livroModel.Categorias = await ObterCategoriasAsync(createDto.CategoriaIds);
 
+            livroModel.Autores = await ObterAutoresAsync(createDto.AutoresIds);
+
             var criado = await _livroRepo.CreateAsync(livroModel);
             return criado.ToLivroDto();
         }
@@ -85,6 +89,8 @@ namespace api.Services
                 throw new ConflictException("Já existe outro livro cadastrado com esse ISBN.");
             
             livroModel.Categorias = await ObterCategoriasAsync(updateDto.CategoriaIds);
+
+            livroModel.Autores = await ObterAutoresAsync(updateDto.AutoresIds);
 
             var atualizado = await _livroRepo.UpdateAsync(id, livroModel);
             
@@ -120,6 +126,24 @@ namespace api.Services
             }
 
             return categorias;
+        }
+
+        public async Task<List<Autor>> ObterAutoresAsync(List<int> autoresIds)
+        {
+            var ids = autoresIds.Distinct().ToList();
+
+            if(ids.Count == 0)
+                return new List<Autor>();
+
+            var autores = await _autorRepo.GetByIdsAsync(ids);
+
+            if(autores.Count != ids.Count)
+            {
+                var inexistentes = ids.Except(autores.Select(a => a.Id));
+                throw new BadRequestException($"Autores inexistentes: {string.Join(", ", inexistentes)}");
+            }
+
+            return autores;
         }
 
     }

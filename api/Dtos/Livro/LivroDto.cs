@@ -16,5 +16,7 @@ namespace api.Dtos.Livro
         public string EditoraNome { get; set; } = string.Empty;
 
         public List<string> Generos { get; set; } = new();
+
+        public List<string> Autores { get; set; } = new();
     }
 }

@@ -10,6 +10,9 @@ namespace api.Helpers
         [Range(1, int.MaxValue, ErrorMessage = "Informe uma editora válida.")]
         public int? EditoraId { get; set; }
 
+        [Range(1, int.MaxValue, ErrorMessage = "Informe um(a) autor válido(a)")]
+        public int? AutorId { get; set; }
+
         [Range(1, int.MaxValue, ErrorMessage = "Informe uma categoria válida.")]
         public int? CategoriaId { get; set; }
 

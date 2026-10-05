@@ -34,5 +34,9 @@ namespace api.Dtos.Livro
         public int EditoraId { get; set; }
 
         public List<int> CategoriaIds{ get; set; } = new();
+
+        [Required]
+        [MinLength(1, ErrorMessage = "Informe ao menos um autor.")]
+        public List<int> AutoresIds{ get; set; } = new();
     }
 }
