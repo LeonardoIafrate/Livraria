@@ -17,7 +17,12 @@ namespace api.Repository
 
         public async Task<PagedResult<Livro>> GetAllAsync(LivroQueryObject query)
         {
-            var livros = _dbContext.Livro.AsNoTracking().Include(l => l.Autores).Include(l => l.Editora).Include(l => l.Categorias).AsQueryable();
+            var livros = _dbContext.Livro.AsNoTracking()
+                                         .Include(l => l.Autores)
+                                         .Include(l => l.Editora)
+                                         .Include(l => l.Categorias)
+                                         .Include(l => l.Estoque)
+                                         .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Nome))
             {
@@ -58,6 +63,7 @@ namespace api.Repository
                                     .Include(l => l.Autores)
                                     .Include(l => l.Editora)
                                     .Include(l => l.Categorias)
+                                    .Include(l => l.Estoque)
                                     .FirstOrDefaultAsync(l => l.Id == id);
         }
 
@@ -67,6 +73,7 @@ namespace api.Repository
                                    .Include(l => l.Autores)
                                    .Include(l => l.Editora)
                                    .Include(l => l.Categorias)
+                                   .Include(l => l.Estoque)
                                    .FirstOrDefaultAsync(l => l.Isbn == isbn);
         }
 
@@ -79,6 +86,7 @@ namespace api.Repository
                    .Include(l => l.Autores)
                    .Include(l => l.Editora)
                    .Include(l => l.Categorias)
+                   .Include(l => l.Estoque)
                    .Where(l => l.Nome.Contains(termo))
                    .OrderBy(l => l.Nome)
                    .ToListAsync();

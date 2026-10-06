@@ -46,6 +46,19 @@ namespace api.Repository
             return editoraModel;
         }
 
+        public async Task<Editora?> UpdateAsync(int id, Editora editora)
+        {
+            var editoraExistente = await _dbContext.Editora.FirstOrDefaultAsync(e => e.Id == id);
+
+            if(editoraExistente == null)
+                return null;
+            
+            editoraExistente.Nome = editora.Nome;
+            await _dbContext.SaveChangesAsync();
+
+            return editoraExistente;
+        }
+
         public async Task<Editora?> DeleteAsync(int id)
         {
             var editoraModel = await _dbContext.Editora.FirstOrDefaultAsync(e => e.Id == id);
@@ -69,17 +82,5 @@ namespace api.Repository
             return await _dbContext.Livro.AnyAsync(l => l.EditoraId == id);
         }
 
-        public async Task<Editora?> UpdateAsync(int id, Editora editora)
-        {
-            var editoraExistente = await _dbContext.Editora.FirstOrDefaultAsync(e => e.Id == id);
-
-            if(editoraExistente == null)
-                return null;
-            
-            editoraExistente.Nome = editora.Nome;
-            await _dbContext.SaveChangesAsync();
-
-            return editoraExistente;
-        }
     }
 }

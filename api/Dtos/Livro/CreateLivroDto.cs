@@ -38,5 +38,8 @@ namespace api.Dtos.Livro
         [Required]
         [MinLength(1, ErrorMessage = "Informe ao menos um autor.")]
         public List<int> AutoresIds{ get; set; } = new();
+
+        [Range(0, 1000000, ErrorMessage = "A quantidade deve estar entre 0 e 1.000.000.")]
+        public int QuantidadeInicial { get; set; }
     }
 }

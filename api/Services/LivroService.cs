@@ -69,6 +69,12 @@ namespace api.Services
 
             livroModel.Autores = await ObterAutoresAsync(createDto.AutoresIds);
 
+            livroModel.Estoque = new Estoque
+            {
+                Quantidade = createDto.QuantidadeInicial,
+                DataAtualizacao = DateTime.UtcNow
+            };
+
             var criado = await _livroRepo.CreateAsync(livroModel);
             return criado.ToLivroDto();
         }

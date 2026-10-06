@@ -18,5 +18,7 @@ namespace api.Dtos.Livro
         public List<string> Generos { get; set; } = new();
 
         public List<string> Autores { get; set; } = new();
+
+        public int QuantidadeEstoque { get; set; }
     }
 }

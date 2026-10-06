@@ -28,7 +28,8 @@ namespace api.Mappers
                 Generos = livro.Categorias
                     .Select(c => c.Genero)
                     .OrderBy(g => g)
-                    .ToList()
+                    .ToList(),
+                QuantidadeEstoque = livro.Estoque?.Quantidade ?? 0
             };
         }
 
