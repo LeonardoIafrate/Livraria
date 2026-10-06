@@ -56,7 +56,7 @@ namespace api.Data.Configurations
                             j.ToTable("LivroCategoria");
                      }); 
 
-              builder.HasMany(l => l.Autor)
+              builder.HasMany(l => l.Autores)
                      .WithMany(a => a.Livros)
                      .UsingEntity<Dictionary<string, object>>(
                             "LivroAutor",

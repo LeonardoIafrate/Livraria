@@ -6,8 +6,8 @@ namespace api.Interfaces
     {
         Task<List<AutorDto>> GetAllAsync(string? nome);
         Task<AutorDto> GetByIdAsync(int id);
-        Task<AutorDto> CreateAutorAsync(CreateAutorDto dto);
-        Task<AutorDto> UpdateAutorAsync(int id, UpdateAutorDto dto);
-        Task DeleteAutorAsync(int id);
+        Task<AutorDto> CreateAsync(CreateAutorDto dto);
+        Task<AutorDto> UpdateAsync(int id, UpdateAutorDto dto);
+        Task DeleteAsync(int id);
     }
 }

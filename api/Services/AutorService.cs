@@ -42,7 +42,7 @@ namespace api.Services
             return autor.ToAutorDto();
         }
 
-        public async Task<AutorDto> CreateAutorAsync(CreateAutorDto dto)
+        public async Task<AutorDto> CreateAsync(CreateAutorDto dto)
         {
             var autorModel = dto.ToAutorFromCreateDto();
 
@@ -50,7 +50,7 @@ namespace api.Services
             return criado.ToAutorDto();
         }
 
-        public async Task<AutorDto> UpdateAutorAsync(int id, UpdateAutorDto dto)
+        public async Task<AutorDto> UpdateAsync(int id, UpdateAutorDto dto)
         {
             var autorModel = dto.ToAutorFromUpdate();
 
@@ -65,7 +65,7 @@ namespace api.Services
             return atualizado.ToAutorDto();
         }
 
-        public async Task DeleteAutorAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var autorExistente = await _autorRepo.GetByIdAsync(id);
             if(autorExistente == null)
