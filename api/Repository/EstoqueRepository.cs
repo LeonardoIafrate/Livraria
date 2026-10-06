@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Data;
 using api.Interfaces;
 using api.Models;
@@ -21,7 +17,8 @@ namespace api.Repository
         {
             return await _dbContext.Estoque
                                    .AsNoTracking()
-                                   .OrderBy(e => e.Id)
+                                   .Include(e => e.Livro)
+                                   .OrderBy(e => e.Livro.Nome)
                                    .ToListAsync();
         }
 
@@ -34,15 +31,20 @@ namespace api.Repository
         {
             return await _dbContext.Estoque
                     .Include(e => e.Livro)
+                    .OrderBy(e => e.Livro.Nome)
                     .FirstOrDefaultAsync(e => e.LivroId == livroId);
         }
-        
-        public async Task<Estoque> CreateAsync(Estoque estoqueModel)
-        {
-            await _dbContext.Estoque.AddAsync(estoqueModel);
-            await _dbContext.SaveChangesAsync();
 
-            return estoqueModel;
+        public async Task<List<Estoque>> SearchByNomeLivroAsync(string nomeLivro)
+        {
+            var termo = nomeLivro.Trim();
+
+            return await _dbContext.Estoque
+                    .AsNoTracking()
+                    .Where(e => e.Livro.Nome
+                    .Contains(termo))
+                    .OrderBy(e => e.Livro.Nome)
+                    .ToListAsync();
         }
 
         public async Task<Estoque?> UpdateAsync(int id, Estoque estoqueModel)
@@ -55,18 +57,6 @@ namespace api.Repository
             await _dbContext.SaveChangesAsync();
 
             return estoqueExistente;
-        }
-
-        public async Task<Estoque?> DeleteAsync(int id)
-        {
-            var estoqueModel = await _dbContext.Estoque.FirstOrDefaultAsync(e => e.Id == id);
-            if(estoqueModel == null)
-                return null;
-
-            _dbContext.Estoque.Remove(estoqueModel);
-            await _dbContext.SaveChangesAsync();
-
-            return estoqueModel;
         }
 
     }

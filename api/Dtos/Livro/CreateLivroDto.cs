@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-
 namespace api.Dtos.Livro
 {
     public class CreateLivroDto

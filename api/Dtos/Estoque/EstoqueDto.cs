@@ -7,6 +7,6 @@ namespace api.Dtos.Estoque
         public DateTime DataAtualizacao { get; set; }
         
         public int LivroId { get; set; }
-        public string LivroNome { get; set; } = string.Empty;
+        public string NomeLivro { get; set; } = string.Empty;
     }
 }
