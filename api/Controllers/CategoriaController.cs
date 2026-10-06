@@ -6,11 +6,11 @@ namespace api.Controllers
 {
     [ApiController]
     [Route("api/categorias")]
-    public class CategoriaContoller : ControllerBase
+    public class CategoriaController : ControllerBase
     {
         private readonly ICategoriaService _categoriaService;
 
-        public CategoriaContoller(ICategoriaService categoriaService)
+        public CategoriaController(ICategoriaService categoriaService)
         {
             _categoriaService = categoriaService;
         }        

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Estoque;
 using api.Exceptions;
 using api.Interfaces;
@@ -43,7 +39,7 @@ namespace api.Services
             return estoque.ToEstoqueDto();
         }
 
-        public async Task<EstoqueDto> GetByLivroId(int livroId)
+        public async Task<EstoqueDto> GetByLivroIdAsync(int livroId)
         {
             var estoque = await _estoqueRepo.GetByLivroIdAsync(livroId);
 
@@ -55,12 +51,7 @@ namespace api.Services
 
         public async Task<EstoqueDto> UpdateAsync(int id, UpdateEstoqueDto dto)
         {
-            var estoqueModel = dto.ToEstoqueFromUpdate();
-
-            var existente = _estoqueRepo.GetByIdAsync(id);
-
-            if(existente == null)
-                throw new NotFoundException("Nenhum livro encontrado com esse Id");
+            var estoqueModel = dto.ToEstoqueFromUpdateDto();
             
             var atualizado = await _estoqueRepo.UpdateAsync(id, estoqueModel);
             if(atualizado == null)

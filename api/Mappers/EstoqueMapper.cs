@@ -17,7 +17,7 @@ namespace api.Mappers
             };
         }
 
-        public static Estoque ToEstoqueFromUpdate(this UpdateEstoqueDto dto)
+        public static Estoque ToEstoqueFromUpdateDto(this UpdateEstoqueDto dto)
         {
             return new Estoque
             {

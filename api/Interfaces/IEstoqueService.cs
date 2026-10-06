@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Estoque;
-using api.Models;
 
 namespace api.Interfaces
 {
@@ -11,7 +6,7 @@ namespace api.Interfaces
     {
         Task<List<EstoqueDto>> GetAllAsync(string? nomeLivro);
         Task<EstoqueDto> GetByIdAsync(int id);
-        Task<EstoqueDto> GetByLivroId(int livroId);
+        Task<EstoqueDto> GetByLivroIdAsync(int livroId);
         Task<EstoqueDto> UpdateAsync(int id, UpdateEstoqueDto dto);
     }
 }
