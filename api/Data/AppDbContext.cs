@@ -13,6 +13,7 @@ namespace api.Data
         public DbSet<Livro> Livro =>Set<Livro>();
         public DbSet<Categoria> Categoria => Set<Categoria>();
         public DbSet<Autor> Autor => Set<Autor>();
+        public DbSet<Estoque> Estoque => Set<Estoque>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

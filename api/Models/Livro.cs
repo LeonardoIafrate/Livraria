@@ -18,5 +18,7 @@ namespace api.Models
         public List<Categoria> Categorias { get; set; } = new();
 
         public List<Autor> Autores { get; set; } = new();
+
+        public Estoque? Estoque { get; set; }
     }
 }
