@@ -14,6 +14,8 @@ namespace api.Data
         public DbSet<Categoria> Categoria => Set<Categoria>();
         public DbSet<Autor> Autor => Set<Autor>();
         public DbSet<Estoque> Estoque => Set<Estoque>();
+        public DbSet<Usuario> Usuario => Set<Usuario>();
+        public DbSet<Endereco> Endereco => Set<Endereco>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
