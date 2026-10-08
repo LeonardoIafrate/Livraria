@@ -9,7 +9,7 @@ namespace api.Models
         public string? Complemento { get; set; }
         public string Bairro { get; set; } = string.Empty;
         public string Cidade { get; set; } = string.Empty;
-        public string UF { get; set; } = string.Empty;
+        public string Uf { get; set; } = string.Empty;
         public bool Principal { get; set; }
         public bool Ativo { get; set; } = true;
 

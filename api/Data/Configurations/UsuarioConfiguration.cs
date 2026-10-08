@@ -15,10 +15,6 @@ namespace api.Data.Configurations
             builder.Property(u => u.Nome)
                    .IsRequired()
                    .HasMaxLength(100);
-            
-            builder.Property(u => u.Username)
-                   .IsRequired()
-                   .HasMaxLength(30);
 
             builder.Property(u => u.Email)
                    .IsRequired()
@@ -40,7 +36,6 @@ namespace api.Data.Configurations
                    .IsRequired()
                    .HasColumnType("date");
 
-            builder.HasIndex(u => u.Username).IsUnique();
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.Cpf).IsUnique();
         }

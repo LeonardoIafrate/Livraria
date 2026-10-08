@@ -35,14 +35,14 @@ namespace api.Data.Configurations
                    .IsRequired()
                    .HasMaxLength(100);
 
-            builder.Property(e => e.UF)
+            builder.Property(e => e.Uf)
                    .IsRequired()
                    .HasMaxLength(2);
 
             builder.HasOne(e => e.Usuario)
                    .WithMany(u => u.Enderecos)
                    .HasForeignKey(e => e.UsuarioId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(e => e.UsuarioId)
                    .HasFilter("[Principal] = 1")
