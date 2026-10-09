@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using api.Dtos.Endereco;
 using api.Helpers;
 
 namespace api.Dtos.Usuario
@@ -27,5 +28,9 @@ namespace api.Dtos.Usuario
 
         [DataNascimento]
         public DateTime DataNascimento { get; set; }
+
+        
+        [Required]
+        public EnderecoBaseDto Endereco { get; set; } = null!;
     }
 }
