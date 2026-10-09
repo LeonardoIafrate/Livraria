@@ -17,15 +17,9 @@ namespace api.Services
 
         public async Task<List<CategoriaDto>> GetAllAsync(string? genero)
         {
-            if (string.IsNullOrWhiteSpace(genero))
-            {
-                var todas = await _categoriaRepo.GetAllAsync();
-                return todas.Select(c => c.ToCategoriaDto()).ToList();
-            }
-
-            var categorias = await _categoriaRepo.SearchByGeneroAsync(genero);
-            if(!categorias.Any())
-                throw new NotFoundException($"Nenhuma categoria encontrada com o gênero {genero}.");
+            var categorias = string.IsNullOrWhiteSpace(genero)
+                ? await _categoriaRepo.GetAllAsync()
+                : await _categoriaRepo.SearchByGeneroAsync(genero);
 
             return categorias.Select(c => c.ToCategoriaDto()).ToList();
         }

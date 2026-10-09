@@ -16,15 +16,9 @@ namespace api.Services
 
         public async Task<List<EditoraDto>> GetAllAsync(string? nome)
         {
-            if (string.IsNullOrWhiteSpace(nome))
-            {
-                var todas = await _editoraRepo.GetAllAsync();
-                return todas.Select(e => e.ToEditoraDto()).ToList();
-            }
-
-            var editoras = await _editoraRepo.SearchByNameAsync(nome);
-            if(!editoras.Any())
-                throw new NotFoundException($"Nenhuma editora encontrada com o nome '{nome}'.");
+            var editoras = string.IsNullOrWhiteSpace(nome)
+                ? await _editoraRepo.GetAllAsync()
+                : await _editoraRepo.SearchByNameAsync(nome);
 
             return editoras.Select(e => e.ToEditoraDto()).ToList();
         }

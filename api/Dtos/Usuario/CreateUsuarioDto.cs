@@ -6,31 +6,31 @@ namespace api.Dtos.Usuario
 {
     public class CreateUsuarioDto
     {
-        [Required]
-        [MaxLength(100, ErrorMessage = "O nome não pode passar de 150 caractéres.")]
+        [Required(ErrorMessage = "O nome é obrigatório.")]
+        [MaxLength(100, ErrorMessage = "O nome não pode passar de 100 caractéres.")]
         public string Nome { get; set; } = string.Empty;
         
-        [Required]
+        [Required(ErrorMessage = "O e-mail é obrigatório.")]
         [EmailAddress(ErrorMessage = "E-mail inválido.")]
-        [MaxLength(100, ErrorMessage = "O E-mail deve ter no máximo 150 caractéres.")]
+        [MaxLength(100, ErrorMessage = "O E-mail deve ter no máximo 100 caractéres.")]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
-        [MaxLength(11, ErrorMessage = "CPF inválido.")]
+        [Required(ErrorMessage = "O CPF é obrigatório.")]
+        [MaxLength(14, ErrorMessage = "CPF inválido.")]
         [Cpf]
         public string Cpf { get; set; } = string.Empty;
 
         [Required]
         [MinLength(8, ErrorMessage = "A senha deve conter no mínimo 8 caracteres.")]
-        [MaxLength(30, ErrorMessage = "A senha deve conter no mínimo 8 caracteres.")]
+        [MaxLength(100, ErrorMessage = "A senha deve conter no máximo 8 caracteres.")]
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d).+$", ErrorMessage = "A senha deve conter letras e números.")]
-        public string SenhaHash { get; set; } = string.Empty;
+        public string Senha { get; set; } = string.Empty;
 
         [DataNascimento]
         public DateTime DataNascimento { get; set; }
 
         
-        [Required]
+        [Required(ErrorMessage = "Informe um endereço.")]
         public EnderecoBaseDto Endereco { get; set; } = null!;
     }
 }

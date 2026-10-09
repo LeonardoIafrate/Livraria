@@ -4,26 +4,26 @@ namespace api.Dtos.Endereco
 {
     public class EnderecoBaseDto
     {
-        [Required]
-        [MaxLength(8, ErrorMessage = "CEP inválido")]
+        [Required(ErrorMessage = "O CEP é obrigatório.")]
+        [RegularExpression(@"^\d{5}-?\d{3}$", ErrorMessage = "CEP inválido")]
         public string Cep { get; set; } = string.Empty;
         
-        [Required]
-        [MaxLength(100, ErrorMessage = "A rua deve conter no máximo 10 caracteres.")]
+        [Required(ErrorMessage = "A rua é obrigatória.")]
+        [MaxLength(150, ErrorMessage = "A rua deve conter no máximo 150 caracteres.")]
         public string Rua { get; set; } = string.Empty;
         
-        [Required]
+        [Required(ErrorMessage = "O número é obrigatório.")]
         [MaxLength(10, ErrorMessage = "O número deve conter no máximo 10 caracteres.")]
         public string Numero { get; set; } = string.Empty;
         
         [MaxLength(100, ErrorMessage = "O complemento deve conter no máximo 100 caracteres.")]
-        public string Complemento { get; set; } = string.Empty;
+        public string? Complemento { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "O bairro é obrigatório.")]
         [MaxLength(100, ErrorMessage = "O bairro deve conter no máximo 10 caracteres.")]
         public string Bairro { get; set; } = string.Empty;
         
-        [Required]
+        [Required(ErrorMessage = "A cidade é obrigatória.")]
         [MaxLength(100, ErrorMessage = "A cidade deve conter no máximo 100 caracteres.")]
         public string Cidade { get; set; } = string.Empty;
         

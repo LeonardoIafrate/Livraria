@@ -16,15 +16,9 @@ namespace api.Services
 
         public async Task<List<EstoqueDto>> GetAllAsync(string? nomeLivro)
         {
-            if (string.IsNullOrWhiteSpace(nomeLivro))
-            {
-                var todas = await _estoqueRepo.GetAllAsync();
-                return todas.Select(e => e.ToEstoqueDto()).ToList();
-            }
-
-            var livros = await _estoqueRepo.SearchByNomeLivroAsync(nomeLivro);
-            if(!livros.Any())
-                throw new NotFoundException($"Nenhum livro com o nome {nomeLivro} foi encontrado");
+            var livros = string.IsNullOrWhiteSpace(nomeLivro)
+                ? await _estoqueRepo.GetAllAsync()
+                : await _estoqueRepo.SearchByNomeLivroAsync(nomeLivro);
 
             return livros.Select(e => e.ToEstoqueDto()).ToList();
         }

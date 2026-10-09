@@ -15,15 +15,9 @@ namespace api.Services
 
         public async Task<List<AutorDto>> GetAllAsync(string? nome)
         {
-            if (string.IsNullOrWhiteSpace(nome))
-            {
-                var todos = await _autorRepo.GetAllAsync();
-                return todos.Select(c => c.ToAutorDto()).ToList();
-            }
-
-            var autores = await _autorRepo.SearchByNomeAsync(nome);
-            if(!autores.Any())
-                throw new NotFoundException($"Nenhum autor encontrado com o nome {autores}");
+            var autores = string.IsNullOrWhiteSpace(nome)
+                ? await _autorRepo.GetAllAsync()
+                : await _autorRepo.SearchByNomeAsync(nome);
 
             return autores.Select(a => a.ToAutorDto()).ToList();
         }

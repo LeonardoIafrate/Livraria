@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace api.Dtos.Endereco
 {
-    public class UpdateEnderecoDto
+    public class UpdateEnderecoDto : EnderecoBaseDto
     {
-        [Required]
-        public EnderecoBaseDto Endereco { get; set; } = null!;
     }
 }

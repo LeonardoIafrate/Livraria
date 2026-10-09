@@ -2,11 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Dtos.Endereco
 {
-    public class CreateEnderecoDto
+    public class CreateEnderecoDto : EnderecoBaseDto
     {
-        [Required]
-        public EnderecoBaseDto Endereco { get; set; } = null!;
-    
         public bool Principal { get; set; } = false;
     }
 }
