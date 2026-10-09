@@ -8,9 +8,9 @@ namespace api.Dtos.Usuario
         public string Nome { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Cpf { get; set; } = string.Empty;
-        public string SenhaHash { get; set; } = string.Empty;
         public DateTime DataNascimento { get; set; }
         public PerfilUsuario Perfil { get; set;}
+        public DateTime DataCadastro { get; set; }
         public bool Ativo { get; set; }
     }
 }
