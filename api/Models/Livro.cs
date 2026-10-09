@@ -6,7 +6,7 @@ namespace api.Models
         public string Nome { get; set; } = string.Empty;
         public string? Sinopse { get; set; }
         public int? AnoLancamento { get; set; }
-        public string Isbn{ get; set; } = string.Empty;
+        public string Isbn { get; set; } = string.Empty;
         public decimal Preco { get; set; }
         public int? NumeroPaginas { get; set; }
         public string? Idioma { get; set; }
