@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Usuario;
+using api.Helpers;
 using api.Models;
 
 namespace api.Mappers
@@ -30,7 +31,7 @@ namespace api.Mappers
             {
               Nome = dto.Nome.Trim(),
               Email = dto.Email.Trim(),
-              Cpf = dto.Cpf.Trim(),
+              Cpf = CpfHellper.SomenteDigitos(dto.Cpf),
               DataNascimento = dto.DataNascimento,
               Ativo = true,
               Enderecos = new List<Endereco>

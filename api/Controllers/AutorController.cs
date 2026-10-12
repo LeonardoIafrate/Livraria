@@ -18,15 +18,15 @@ namespace api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<AutorDto>>> GetAll([FromQuery] string? nome)
         {
-            var categorias = await _autorService.GetAllAsync(nome);
-            return Ok(categorias);
+            var autores = await _autorService.GetAllAsync(nome);
+            return Ok(autores);
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<AutorDto>> GetById([FromRoute] int id)
         {
-            var categoria = await _autorService.GetByIdAsync(id);
-            return Ok(categoria);
+            var autor = await _autorService.GetByIdAsync(id);
+            return Ok(autor);
         }
 
         [HttpPost]

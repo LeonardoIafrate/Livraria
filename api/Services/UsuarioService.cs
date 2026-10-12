@@ -68,11 +68,6 @@ namespace api.Services
 
             usuarioModel.SenhaHash = _passwordHasher.HashPassword(usuarioModel, dto.Senha);
 
-            var endereco = dto.Endereco.ToEnderecoFromBaseDto();
-            endereco.Principal = true;
-            endereco.Ativo = true;
-            usuarioModel.Enderecos.Add(endereco);
-
             var criado = await _usuarioRepo.CreateAsync(usuarioModel);
             return criado.ToUsuarioDto();
         }

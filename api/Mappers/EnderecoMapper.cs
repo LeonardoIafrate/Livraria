@@ -11,13 +11,13 @@ namespace api.Mappers
             return new EnderecoDto
             {
               Id = endereco.Id,
-              Cep = endereco.Cep.Trim(),
-              Rua = endereco.Rua.Trim(),
-              Numero = endereco.Numero.Trim(),
-              Complemento = endereco.Complemento.FormatarOpcional(),
-              Bairro = endereco.Bairro.Trim(),
-              Cidade = endereco.Cidade.Trim(),
-              Uf = endereco.Uf.Trim().ToUpperInvariant(),
+              Cep = endereco.Cep,
+              Rua = endereco.Rua,
+              Numero = endereco.Numero,
+              Complemento = endereco.Complemento,
+              Bairro = endereco.Bairro,
+              Cidade = endereco.Cidade,
+              Uf = endereco.Uf,
               Principal = endereco.Principal,
               Ativo = endereco.Ativo
             };
@@ -27,7 +27,7 @@ namespace api.Mappers
         {
             return new Endereco
             {
-                Cep = dto.Cep.Trim(),
+                Cep = CpfHellper.SomenteDigitos(dto.Cep),
                 Rua = dto.Rua.Trim(),
                 Numero = dto.Numero.Trim(),
                 Complemento = dto.Complemento.FormatarOpcional(),
@@ -36,36 +36,6 @@ namespace api.Mappers
                 Uf = dto.Uf.Trim().ToUpperInvariant(),
                 Principal = principal,
                 Ativo = true
-            };
-        }
-
-        public static Endereco ToEnderecoFromCreateDto(this CreateEnderecoDto dto)
-        {
-            return new Endereco
-            {
-              Cep = dto.Endereco.Cep,
-              Rua = dto.Endereco.Rua.Trim(),
-              Numero = dto.Endereco.Numero.Trim(),
-              Complemento = dto.Endereco.Complemento.FormatarOpcional(),
-              Bairro = dto.Endereco.Bairro.Trim(),
-              Cidade = dto.Endereco.Cidade.Trim(),
-              Uf = dto.Endereco.Uf.Trim(),
-              Principal = dto.Principal,
-              Ativo = true
-            };
-        }
-
-        public static Endereco ToEnderecoFromUpdate(this UpdateEnderecoDto dto)
-        {
-            return new Endereco
-            {
-              Cep = dto.Endereco.Cep,
-              Rua = dto.Endereco.Rua.Trim(),
-              Numero = dto.Endereco.Numero.Trim(),
-              Complemento = dto.Endereco.Complemento.FormatarOpcional(),
-              Bairro = dto.Endereco.Bairro.Trim(),
-              Cidade = dto.Endereco.Cidade.Trim(),
-              Uf = dto.Endereco.Uf.Trim()
             };
         }
     }
