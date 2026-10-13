@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using api.Models;
 using Microsoft.AspNetCore.Identity;
 using api.Helpers;
+using api.Settings;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,9 +34,13 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
-builder.Services.AddControllers().AddRespostaDeValidacao();
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddRespostaDeValidacao();
 
 builder.Services.AddSwaggerGen();
 
