@@ -19,6 +19,8 @@ namespace api.Exceptions
             {
                 NotFoundException => (StatusCodes.Status404NotFound, "Recurso não encontrado"),
                 ConflictException => (StatusCodes.Status409Conflict, "Conflito com dados existentes"),
+                UnauthorizedException => (StatusCodes.Status401Unauthorized, "Não autorizado."),
+                ForbiddenException => (StatusCodes.Status403Forbidden, "Acesso negado."),
                 BadRequestException => (StatusCodes.Status400BadRequest, "Requisição inválida"),
                 _ => (StatusCodes.Status500InternalServerError, "Erro interno de servidor")
             };

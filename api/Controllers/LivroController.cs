@@ -1,6 +1,7 @@
 using api.Dtos.Livro;
 using api.Helpers;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -38,6 +39,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<LivroDto>> Create([FromBody] CreateLivroDto dto)
         {
             var criada = await _livroService.CreateAsync(dto);
@@ -45,6 +47,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<LivroDto>> Update([FromRoute] int id, [FromBody] UpdateLivroDto dto)
         {
             var atualizada = await _livroService.UpdateAsync(id, dto);
@@ -52,6 +55,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
             await _livroService.DeleteAsync(id);

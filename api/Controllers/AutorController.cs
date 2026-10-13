@@ -1,5 +1,6 @@
 using api.Dtos.Autor;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -15,6 +16,7 @@ namespace api.Controllers
             _autorService = autorService;
         }
 
+        
         [HttpGet]
         public async Task<ActionResult<List<AutorDto>>> GetAll([FromQuery] string? nome)
         {
