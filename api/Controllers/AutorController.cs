@@ -32,6 +32,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<AutorDto>> Create([FromBody] CreateAutorDto dto)
         {
             var criado = await _autorService.CreateAsync(dto);
@@ -39,6 +40,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<AutorDto>> Update([FromRoute] int id, [FromBody] UpdateAutorDto dto)
         {
             var atualizado = await _autorService.UpdateAsync(id, dto);
@@ -46,6 +48,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await _autorService.DeleteAsync(id);

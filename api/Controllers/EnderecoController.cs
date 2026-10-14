@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Endereco;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -20,6 +21,7 @@ namespace api.Controllers
         }
 
         [HttpGet("usuarios/{usuarioId:int}/enderecos")]
+        [Authorize]
         public async Task<ActionResult<List<EnderecoDto>>> GetByUsuarioId([FromRoute] int usuarioId)
         {
             var enderecos = await _enderecoService.GetByUsuarioIdAsync(usuarioId);
@@ -27,6 +29,7 @@ namespace api.Controllers
         }
 
         [HttpGet("enderecos/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<EnderecoDto>> GetById([FromRoute] int id)
         {
             var endereco = await _enderecoService.GetByIdAsync(id);
@@ -34,6 +37,7 @@ namespace api.Controllers
         }
 
         [HttpPost("usuario/{usuarioId:int}/enderecos")]
+        [Authorize]
         public async Task<ActionResult<EnderecoDto>> Create([FromRoute] int usuarioId, [FromBody] CreateEnderecoDto dto)
         {
             var criado = await _enderecoService.CreateAsync(usuarioId, dto);
@@ -41,6 +45,7 @@ namespace api.Controllers
         }
 
         [HttpPut("enderecos/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<EnderecoDto>> Update([FromRoute] int id, [FromBody] UpdateEnderecoDto dto)
         {
             var atualizado = await _enderecoService.UpdateAsync(id, dto);
@@ -48,6 +53,7 @@ namespace api.Controllers
         }
 
         [HttpPut("enderecos/{id:int}/principal")]
+        [Authorize]
         public async Task<ActionResult<EnderecoDto>> DefinirPrincipal([FromRoute]int id)
         {
             var atualizado = await _enderecoService.DefinirPrincipalAsync(id);
@@ -55,6 +61,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("enderecos/{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Desativar([FromRoute] int id)
         {
             await _enderecoService.DesativarAsync(id);

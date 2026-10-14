@@ -1,5 +1,6 @@
 using api.Dtos.Editora;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -30,6 +31,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EditoraDto>> Create([FromBody] CreateEditoraDto dto)
         {
             var criada = await _editoraService.CreateAsync(dto);
@@ -37,6 +39,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EditoraDto>> Update([FromBody] UpdateEditoraDto dto, [FromRoute]int id)
         {
             var atualizada = await _editoraService.UpdateAsync(dto, id);
@@ -44,6 +47,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await _editoraService.DeleteAsync(id);

@@ -1,5 +1,6 @@
 using api.Dtos.Usuario;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -16,6 +17,7 @@ namespace api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<UsuarioDto>>> GetAll([FromQuery]string? nome)
         {
             var usuarios = await _usuarioService.GetAllAsync(nome);
@@ -23,6 +25,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UsuarioDto>> GetById([FromRoute] int id)
         {
             var usuario = await _usuarioService.GetByIdAsync(id);
@@ -30,6 +33,7 @@ namespace api.Controllers
         }
 
         [HttpGet("email/{email}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UsuarioDto>> GetByEmail([FromRoute] string email)
         {
             var usuario = await _usuarioService.GetByEmailAsync(email);
@@ -44,6 +48,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<UsuarioDto>> Update([FromRoute] int id, [FromBody] UpdateUsuarioDto dto)
         {
             var atualizado = await _usuarioService.UpdateAsync(id, dto);
@@ -51,6 +56,7 @@ namespace api.Controllers
         }
 
         [HttpPatch("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Desativar([FromRoute] int id)
         {
             await _usuarioService.DesativarAsync(id);
@@ -58,6 +64,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await _usuarioService.DeleteAsync(id);

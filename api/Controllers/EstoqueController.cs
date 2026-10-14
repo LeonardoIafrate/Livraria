@@ -1,5 +1,6 @@
 using api.Dtos.Estoque;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -36,6 +37,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EstoqueDto>> Update([FromRoute] int id, [FromBody] UpdateEstoqueDto dto)
         {
             var atualizado = await _estoqueService.UpdateAsync(id, dto);
