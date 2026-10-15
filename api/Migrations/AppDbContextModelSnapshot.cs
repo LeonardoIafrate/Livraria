@@ -208,6 +208,42 @@ namespace api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("api.Models.ItemPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LivroId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LivroId");
+
+                    b.HasIndex("PedidoId", "LivroId")
+                        .IsUnique();
+
+                    b.ToTable("ItemPedido", null, t =>
+                        {
+                            t.HasCheckConstraint("C_ItemPedido_PrecoUnitario", "[PrecoUnitario] >= 0");
+
+                            t.HasCheckConstraint("C_ItemPedido_Quantidade", "[Quantidade] > 0");
+                        });
+                });
+
             modelBuilder.Entity("api.Models.Livro", b =>
                 {
                     b.Property<int>("Id")
@@ -263,6 +299,46 @@ namespace api.Migrations
                             t.HasCheckConstraint("CK_Livro_NumeroPaginas", "[NumeroPaginas] IS NULL OR [NumeroPaginas] > 0");
 
                             t.HasCheckConstraint("CK_Livro_Preco", "[Preco] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("api.Models.Pedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataPedido")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EnderecoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorTotal")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnderecoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Pedido", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Pedido_Status", "[Status] IN ('Pendente', 'Pago', 'Enviado', 'Entregue', 'Cancelado')");
+
+                            t.HasCheckConstraint("CK_Pedido_ValorTotal", "[ValorTotal] > 0");
                         });
                 });
 
@@ -371,6 +447,25 @@ namespace api.Migrations
                     b.Navigation("Livro");
                 });
 
+            modelBuilder.Entity("api.Models.ItemPedido", b =>
+                {
+                    b.HasOne("api.Models.Livro", "Livro")
+                        .WithMany()
+                        .HasForeignKey("LivroId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Pedido", "Pedido")
+                        .WithMany("Itens")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Livro");
+
+                    b.Navigation("Pedido");
+                });
+
             modelBuilder.Entity("api.Models.Livro", b =>
                 {
                     b.HasOne("api.Models.Editora", "Editora")
@@ -382,9 +477,33 @@ namespace api.Migrations
                     b.Navigation("Editora");
                 });
 
+            modelBuilder.Entity("api.Models.Pedido", b =>
+                {
+                    b.HasOne("api.Models.Endereco", "Endereco")
+                        .WithMany("Pedidos")
+                        .HasForeignKey("EnderecoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Usuario", "Usuario")
+                        .WithMany("Pedidos")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Endereco");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("api.Models.Editora", b =>
                 {
                     b.Navigation("Livros");
+                });
+
+            modelBuilder.Entity("api.Models.Endereco", b =>
+                {
+                    b.Navigation("Pedidos");
                 });
 
             modelBuilder.Entity("api.Models.Livro", b =>
@@ -392,9 +511,16 @@ namespace api.Migrations
                     b.Navigation("Estoque");
                 });
 
+            modelBuilder.Entity("api.Models.Pedido", b =>
+                {
+                    b.Navigation("Itens");
+                });
+
             modelBuilder.Entity("api.Models.Usuario", b =>
                 {
                     b.Navigation("Enderecos");
+
+                    b.Navigation("Pedidos");
                 });
 #pragma warning restore 612, 618
         }
