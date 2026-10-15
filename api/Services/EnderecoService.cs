@@ -29,9 +29,9 @@ namespace api.Services
             return enderecos.Select(e => e.ToEnderecoDto()).ToList();
         }
 
-        public async Task<EnderecoDto> GetByIdAsync(int id)
+        public async Task<EnderecoDto> GetByIdAsync(int id, int usuarioId)
         {
-            var endereco = await ObterEnderecoAtivo(id);
+            var endereco = await ObterEnderecoAtivo(id, usuarioId);
             return endereco.ToEnderecoDto();
         }
 
@@ -53,9 +53,9 @@ namespace api.Services
             return criado.ToEnderecoDto();
         }
 
-        public async Task<EnderecoDto> UpdateAsync(int id, UpdateEnderecoDto dto)
+        public async Task<EnderecoDto> UpdateAsync(int id, int usuarioId, UpdateEnderecoDto dto)
         {
-            await ObterEnderecoAtivo(id);
+            await ObterEnderecoAtivo(id, usuarioId);
 
             var enderecoModel = dto.ToEnderecoFromBaseDto();
 
@@ -66,9 +66,9 @@ namespace api.Services
             return atualizado.ToEnderecoDto();
         }
 
-        public async Task<EnderecoDto> DefinirPrincipalAsync(int id)
+        public async Task<EnderecoDto> DefinirPrincipalAsync(int id, int usuarioId)
         {
-            var existente = await ObterEnderecoAtivo(id);
+            var existente = await ObterEnderecoAtivo(id, usuarioId);
             if(existente.Principal)
                 return existente.ToEnderecoDto();
 
@@ -79,13 +79,9 @@ namespace api.Services
             return atualizado.ToEnderecoDto();
         }
 
-        public async Task DesativarAsync(int id)
+        public async Task DesativarAsync(int id, int usuarioId)
         {
-            var existente = await ObterEnderecoAtivo(id);
-
-            var ativos = await _enderecoRepo.GetByUsuarioIdAsync(existente.UsuarioId);
-            if(ativos.Count <= 1)
-                throw new ConflictException("Não é possível desativar o único endereço ativo. Cadastre outro antes.");
+            var existente = await ObterEnderecoAtivo(id, usuarioId);
             
             var eraPrincipal = existente.Principal;
 
@@ -93,12 +89,15 @@ namespace api.Services
 
             if (eraPrincipal)
             {
-                var proximo = ativos.First(e => e.Id != id);
-                await _enderecoRepo.DefinirPrincipalAsync(proximo.Id);
+                var restantes = await _enderecoRepo.GetByUsuarioIdAsync(usuarioId);
+                var proximo = restantes.FirstOrDefault();
+
+                if(proximo != null)
+                    await _enderecoRepo.DefinirPrincipalAsync(proximo.Id);
             }
         }
 
-        private async Task<Endereco> ObterEnderecoAtivo(int id)
+        private async Task<Endereco> ObterEnderecoAtivo(int id, int usuarioId)
         {
             var endereco = await _enderecoRepo.GetByIdAsync(id);
             if(endereco == null || !endereco.Ativo)

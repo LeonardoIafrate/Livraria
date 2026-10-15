@@ -1,5 +1,6 @@
 using api.Dtos.Auth;
 using api.Interfaces;
+using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,6 @@ namespace api.Controllers
             _authService = authService;
         }
 
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<TokenDto>> Login([FromBody] LoginDto dto)
         {
@@ -24,7 +24,7 @@ namespace api.Controllers
             return Ok(token);
         }
 
-        [Authorize]
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
         [HttpGet("claims")]
         public IActionResult Claims()
         {

@@ -1,11 +1,13 @@
 using api.Dtos.Livro;
 using api.Helpers;
 using api.Interfaces;
+using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize(Roles = nameof(PerfilUsuario.Admin))]
     [ApiController]
     [Route("api/livros")]
     public class LivroController : ControllerBase
@@ -17,6 +19,7 @@ namespace api.Controllers
             _livroService = livroService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<PagedResult<LivroDto>>> GetAll([FromQuery] LivroQueryObject query)
         {
@@ -24,6 +27,7 @@ namespace api.Controllers
             return Ok(livros);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<LivroDto>> GetById([FromRoute]int id)
         {
@@ -31,6 +35,7 @@ namespace api.Controllers
             return Ok(livro);   
         }
 
+        [AllowAnonymous]
         [HttpGet("isbn/{isbn}")]
         public async Task<ActionResult<LivroDto>> GetByIsbn([FromRoute] string isbn)
         {
@@ -39,7 +44,6 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<LivroDto>> Create([FromBody] CreateLivroDto dto)
         {
             var criada = await _livroService.CreateAsync(dto);
@@ -47,16 +51,13 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<LivroDto>> Update([FromRoute] int id, [FromBody] UpdateLivroDto dto)
         {
             var atualizada = await _livroService.UpdateAsync(id, dto);
             return Ok(atualizada);
         }
 
-        [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete([FromRoute]int id)
+        [HttpDelete("{id:int}")]        public async Task<IActionResult> Delete([FromRoute]int id)
         {
             await _livroService.DeleteAsync(id);
             return NoContent();

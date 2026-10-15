@@ -13,5 +13,6 @@ namespace api.Models
         public bool Ativo { get; set; } = true;
 
         public List<Endereco> Enderecos { get; set; } = new();
+        public List<Pedido> Pedidos { get; set;} = new();
     }
 }

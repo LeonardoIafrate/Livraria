@@ -16,6 +16,8 @@ namespace api.Data
         public DbSet<Estoque> Estoque => Set<Estoque>();
         public DbSet<Usuario> Usuario => Set<Usuario>();
         public DbSet<Endereco> Endereco => Set<Endereco>();
+        public DbSet<Pedido> Pedido => Set<Pedido>();
+        public DbSet<ItemPedido> ItemPedido => Set<ItemPedido>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

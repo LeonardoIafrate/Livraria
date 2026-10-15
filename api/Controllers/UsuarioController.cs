@@ -1,10 +1,13 @@
 using api.Dtos.Usuario;
+using api.Helpers;
 using api.Interfaces;
+using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/Usuarios")]
     public class UsuarioController : ControllerBase
@@ -16,30 +19,7 @@ namespace api.Controllers
             _usuarioService = usuarioService;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<UsuarioDto>>> GetAll([FromQuery]string? nome)
-        {
-            var usuarios = await _usuarioService.GetAllAsync(nome);
-            return Ok(usuarios);
-        }
-
-        [HttpGet("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UsuarioDto>> GetById([FromRoute] int id)
-        {
-            var usuario = await _usuarioService.GetByIdAsync(id);
-            return Ok(usuario);
-        }
-
-        [HttpGet("email/{email}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UsuarioDto>> GetByEmail([FromRoute] string email)
-        {
-            var usuario = await _usuarioService.GetByEmailAsync(email);
-            return Ok(usuario);
-        }
-
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<UsuarioDto>> Create([FromBody] CreateUsuarioDto dto)
         {
@@ -47,25 +27,62 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new {id = criado.Id}, criado);
         }
 
-        [HttpPut("{id:int}")]
-        [Authorize]
-        public async Task<ActionResult<UsuarioDto>> Update([FromRoute] int id, [FromBody] UpdateUsuarioDto dto)
+        [HttpGet("me")]
+        public async Task<ActionResult<UsuarioDto>> GetMe()
         {
-            var atualizado = await _usuarioService.UpdateAsync(id, dto);
+            var usuario = await _usuarioService.GetByIdAsync(User.GetUsuarioByID());
+            return Ok(usuario);
+        }
+
+        [HttpPut("me")]         
+        public async Task<ActionResult<UsuarioDto>> Update([FromBody] UpdateUsuarioDto dto)
+        {
+            var atualizado = await _usuarioService.UpdateAsync(User.GetUsuarioByID(), dto);
             return Ok(atualizado);
         }
 
-        [HttpPatch("{id:int}")]
-        [Authorize]
+        [HttpPatch("me/desativar")]
+        public async Task<IActionResult> Desativar()
+        {
+            await _usuarioService.DesativarAsync(User.GetUsuarioByID());
+            return NoContent();
+        }
+
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
+        [HttpGet]
+        public async Task<ActionResult<List<UsuarioDto>>> GetAll([FromQuery]string? nome)
+        {
+            var usuarios = await _usuarioService.GetAllAsync(nome);
+            return Ok(usuarios);
+        }
+
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<UsuarioDto>> GetById([FromRoute] int id)
+        {
+            var usuario = await _usuarioService.GetByIdAsync(id);
+            return Ok(usuario);
+        }
+
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<UsuarioDto>> GetByEmail([FromRoute] string email)
+        {
+            var usuario = await _usuarioService.GetByEmailAsync(email);
+            return Ok(usuario);
+        }
+
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
+        [HttpPatch("{id:int}/desativar")]
         public async Task<IActionResult> Desativar([FromRoute] int id)
         {
             await _usuarioService.DesativarAsync(id);
             return NoContent();
         }
 
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
         [HttpDelete("{id:int}")]
-        [Authorize]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await _usuarioService.DeleteAsync(id);
             return NoContent();

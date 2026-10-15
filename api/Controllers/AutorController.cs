@@ -1,10 +1,12 @@
 using api.Dtos.Autor;
 using api.Interfaces;
+using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize(Roles = nameof(PerfilUsuario.Admin))]
     [ApiController]
     [Route("api/autores")]
     public class AutorController : ControllerBase
@@ -15,8 +17,8 @@ namespace api.Controllers
         {
             _autorService = autorService;
         }
-
         
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<AutorDto>>> GetAll([FromQuery] string? nome)
         {
@@ -24,6 +26,7 @@ namespace api.Controllers
             return Ok(autores);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<AutorDto>> GetById([FromRoute] int id)
         {
@@ -32,7 +35,6 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<AutorDto>> Create([FromBody] CreateAutorDto dto)
         {
             var criado = await _autorService.CreateAsync(dto);
@@ -40,7 +42,6 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<AutorDto>> Update([FromRoute] int id, [FromBody] UpdateAutorDto dto)
         {
             var atualizado = await _autorService.UpdateAsync(id, dto);
@@ -48,7 +49,6 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await _autorService.DeleteAsync(id);

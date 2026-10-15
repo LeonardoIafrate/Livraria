@@ -1,10 +1,12 @@
 using api.Dtos.Categoria;
 using api.Interfaces;
+using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize(Roles = nameof(PerfilUsuario.Admin))]
     [ApiController]
     [Route("api/categorias")]
     public class CategoriaController : ControllerBase
@@ -16,6 +18,7 @@ namespace api.Controllers
             _categoriaService = categoriaService;
         }        
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<CategoriaDto>>> GetAll([FromQuery] string? genero)
         {
@@ -23,6 +26,7 @@ namespace api.Controllers
             return Ok(categorias);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CategoriaDto>> GetById([FromRoute] int id)
         {
@@ -31,7 +35,6 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CategoriaDto>> Create([FromBody] CreateCategoriaDto dto)
         {
             var criada = await _categoriaService.CreateAsync(dto);
@@ -39,7 +42,6 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CategoriaDto>> Update([FromRoute] int id, [FromBody] UpdateCategoriaDto dto)
         {
             var atualizada = await _categoriaService.UpdateAsync(id, dto);
@@ -47,7 +49,6 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await _categoriaService.DeleteAsync(id);
