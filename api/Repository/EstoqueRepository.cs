@@ -41,8 +41,7 @@ namespace api.Repository
 
             return await _dbContext.Estoque
                     .AsNoTracking()
-                    .Where(e => e.Livro.Nome
-                    .Contains(termo))
+                    .Where(e => e.Livro.Nome.Contains(termo))
                     .OrderBy(e => e.Livro.Nome)
                     .ToListAsync();
         }
