@@ -38,5 +38,25 @@ namespace api.Mappers
                 Ativo = true
             };
         }
+
+        public static string ToEnderecoFormatado(this Endereco endereco)
+        {
+            var linhas = new List<string>
+            {
+              $"{endereco.Rua}, {endereco.Numero}",
+              endereco.Bairro,
+              $"{endereco.Cidade}, {endereco.Uf}"  
+            };
+
+            if(!string.IsNullOrWhiteSpace(endereco.Complemento))
+                linhas.Add(endereco.Complemento);
+
+            return string.Join("\n", linhas);
+        }
+
+        private static string FormatarCep(string cep)
+        {
+            return cep.Length == 8 ? $"{cep[5]}-{cep[5..]}" : cep;
+        }
     }
 }

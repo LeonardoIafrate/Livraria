@@ -15,6 +15,6 @@ namespace api.Dtos.Pedido
         public int EnderecoId { get; set; }
         public string Endereco { get; set; } = string.Empty;
         
-        public List<ItemPedido> Itens { get; set; } = new();
+        public List<ItemPedidoDto> Itens { get; set; } = new();
     }
 }

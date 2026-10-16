@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace api.Dtos.Pedido
 {
     public class ItemPedidoDto
     {
+        public int LivroId { get; set; }
         public int LivroDto { get; set; }
         public string LivroNome { get; set; } = string.Empty;
         public int Quantidade { get; set; }
