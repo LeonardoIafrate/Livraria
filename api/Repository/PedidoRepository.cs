@@ -35,7 +35,7 @@ namespace api.Repository
                             .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<List<Pedido>> GetByIdUsuario(int usuarioId)
+        public async Task<List<Pedido>> GetByIdUsuarioAsync(int usuarioId)
         {
             return await _dbContext.Pedido
                             .AsNoTracking()

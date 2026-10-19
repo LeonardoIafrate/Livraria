@@ -6,7 +6,7 @@ namespace api.Interfaces
     {
         Task<List<Pedido>> GetAllAsync();
         Task<Pedido?> GetByIdAsync(int id);
-        Task<List<Pedido>> GetByIdUsuario(int usuarioId);
+        Task<List<Pedido>> GetByIdUsuarioAsync(int usuarioId);
         Task<List<Pedido>> GetByNomeUsuarioAsync(string nomeUsuario);
         Task<Pedido> CreatePedidoAsync(Pedido pedidoModel);
         Task<Pedido?> UpdateEnderecoPedidoAsync(int id, int enderecoId);

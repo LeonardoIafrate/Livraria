@@ -7,6 +7,7 @@ namespace api.Interfaces
     {
         Task<PagedResult<Livro>> GetAllAsync(LivroQueryObject query);
         Task<Livro?> GetByIdAsync(int id);
+        Task<List<Livro>> GetByIdsAsync(List<int> ids);
         Task<List<Livro>> SearchByNameAsync(string nome);
         Task<Livro?> GetByIsbnAsync(string isbn);
         Task<Livro> CreateAsync(Livro livroModel);
