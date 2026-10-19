@@ -75,7 +75,7 @@ namespace api.Services
             {
                 var quantidade = quantidades[livro.Id];
                 if (livro.Estoque == null || livro.Estoque.Quantidade < quantidade)
-                    throw new ConflictException($"Estoque insuficiente para o livro \"{livro.Nome}\".");
+                    throw new ConflictException($"Estoque insuficiente para o livro {livro.Nome}.");
 
                 livro.Estoque.Quantidade -= quantidade;
                 livro.Estoque.DataAtualizacao = DateTime.UtcNow;

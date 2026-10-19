@@ -17,6 +17,8 @@ namespace api.Data.Configurations
 
             builder.HasIndex(e => e.LivroId).IsUnique();
 
+            builder.Property(e => e.RowVersion).IsRowVersion();
+
             builder.HasOne(e => e.Livro)
                    .WithOne(l => l.Estoque)
                    .HasForeignKey<Estoque>(e => e.LivroId)

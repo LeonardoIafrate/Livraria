@@ -8,5 +8,7 @@ namespace api.Models
 
         public int LivroId { get; set; }
         public Livro Livro { get; set; } = null!;
+
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
     }
 }

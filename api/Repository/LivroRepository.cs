@@ -69,7 +69,7 @@ namespace api.Repository
 
         public async Task<List<Livro>> GetByIdsAsync(List<int> ids)
         {
-            return await _dbContext.Livro.Where(l => ids.Contains(l.Id)).ToListAsync();
+            return await _dbContext.Livro.Include(l => l.Estoque).Where(l => ids.Contains(l.Id)).ToListAsync();
         }
 
         public async Task<Livro?> GetByIsbnAsync(string isbn)

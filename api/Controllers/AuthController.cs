@@ -1,7 +1,5 @@
 using api.Dtos.Auth;
 using api.Interfaces;
-using api.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -22,14 +20,6 @@ namespace api.Controllers
         {
             var token = await _authService.LoginAsync(dto);
             return Ok(token);
-        }
-
-        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
-        [HttpGet("claims")]
-        public IActionResult Claims()
-        {
-            var claims = User.Claims.Select(c => new {c.Type, c.Value});
-            return Ok(claims);
         }
     }
 }

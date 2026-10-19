@@ -20,7 +20,7 @@ namespace api.Repository
                             .Include(p => p.Usuario)
                             .Include(p => p.Endereco)
                             .Include(p => p.Itens)
-                                .ThenInclude(i => i.LivroId)
+                                .ThenInclude(i => i.Livro)
                             .OrderByDescending(p => p.DataPedido)
                             .ToListAsync();
         }
@@ -31,7 +31,7 @@ namespace api.Repository
                             .Include(p => p.Usuario)
                             .Include(p => p.Endereco)
                             .Include(p => p.Itens)
-                                .ThenInclude(i => i.LivroId)
+                                .ThenInclude(i => i.Livro)
                             .FirstOrDefaultAsync(p => p.Id == id);
         }
 
@@ -43,7 +43,7 @@ namespace api.Repository
                             .Include(p => p.Usuario)
                             .Include(p => p.Endereco)
                             .Include(p => p.Itens)
-                                .ThenInclude(i => i.LivroId)
+                                .ThenInclude(i => i.Livro)
                             .OrderByDescending(p => p.DataPedido)
                             .ToListAsync();
         }
@@ -58,7 +58,7 @@ namespace api.Repository
                             .Include(p => p.Usuario)
                             .Include(p => p.Endereco)
                             .Include(p => p.Itens)
-                                .ThenInclude(i => i.LivroId)
+                                .ThenInclude(i => i.Livro)
                             .OrderByDescending(p => p.DataPedido)
                             .ToListAsync();
         }
