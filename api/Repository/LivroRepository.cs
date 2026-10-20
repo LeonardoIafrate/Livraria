@@ -152,5 +152,10 @@ namespace api.Repository
         {
             return await _dbContext.Livro.AnyAsync(l => l.Id == id);
         }
+
+        public async Task<bool> PossuiPedidosAsync(int id)
+        {
+            return await _dbContext.ItemPedido.AnyAsync(i => i.LivroId == id);
+        }
     }
 }

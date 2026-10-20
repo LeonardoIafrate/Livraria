@@ -79,6 +79,17 @@ namespace api.Repository
             return true;
         }
 
+        public async Task<Usuario?> AlterarUsuarioAdminAsync(int id)
+        {
+            var usuarioModel = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Id == id);
+            if(usuarioModel == null)
+                return null;
+
+            usuarioModel.Perfil = PerfilUsuario.Admin;
+            await _dbContext.SaveChangesAsync();
+            return usuarioModel;
+        }
+
         public async Task<Usuario?> DeleteAsync(int id)
         {
             var usuarioModel = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Id == id);
@@ -111,6 +122,11 @@ namespace api.Repository
 
             await _dbContext.SaveChangesAsync();
             return existente;
+        }
+
+        public async Task<bool> PossuiPedidosAsync(int id)
+        {
+            return await _dbContext.Pedido.AnyAsync(p => p.UsuarioId == id);
         }
     }
 }

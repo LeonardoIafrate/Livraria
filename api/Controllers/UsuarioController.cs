@@ -56,6 +56,22 @@ namespace api.Controllers
         }
 
         [Authorize(Roles = nameof(PerfilUsuario.Admin))]
+        [HttpPost("admin")]
+        public async Task<ActionResult<UsuarioDto>> CreateUsuarioAdmin([FromBody] CreateUsuarioDto dto)
+        {
+            var criado = await _usuarioService.CreateAdminAsync(dto);
+            return CreatedAtAction(nameof(GetById), new{id = criado.Id}, criado);
+        }
+
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult<UsuarioDto>> UpdateAdmin([FromRoute] int id)
+        {
+            var atualizado = await _usuarioService.AlterarAdminAsync(id);
+            return Ok(atualizado);
+        }
+
+        [Authorize(Roles = nameof(PerfilUsuario.Admin))]
         [HttpGet]
         public async Task<ActionResult<List<UsuarioDto>>> GetAll([FromQuery]string? nome)
         {

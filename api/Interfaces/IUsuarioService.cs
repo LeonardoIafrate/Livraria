@@ -13,7 +13,9 @@ namespace api.Interfaces
         Task<UsuarioDto> GetByEmailAsync(string email);
         Task<UsuarioDto> GetByCpfAsync(string cpf);
         Task<UsuarioDto> CreateAsync(CreateUsuarioDto dto);
+        Task<UsuarioDto> CreateAdminAsync(CreateUsuarioDto dto);
         Task<UsuarioDto> UpdateAsync(int id, UpdateUsuarioDto dto);
+        Task<UsuarioDto> AlterarAdminAsync(int id);
         Task AlterarSenhaAsync(int id, AlterarSenhaDto alterarSenhaDto);
         Task DeleteAsync(int id);
         Task DesativarAsync(int id);

@@ -108,6 +108,9 @@ namespace api.Services
             
             if(existente == null)
                 throw new NotFoundException("Livro não encontrado.");
+
+            if(await _livroRepo.PossuiPedidosAsync(id))
+                throw new ConflictException("Não é possível excluir um livro que está em pedidos.");
             
             await _livroRepo.DeleteAsync(id);
         }

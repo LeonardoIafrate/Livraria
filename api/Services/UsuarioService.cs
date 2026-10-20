@@ -72,6 +72,25 @@ namespace api.Services
             return criado.ToUsuarioDto();
         }
 
+        public async Task<UsuarioDto> CreateAdminAsync(CreateUsuarioDto dto)
+        {
+            var usuarioModel = dto.ToUsuarioFromCreateDto();
+
+            var cpfEmUso = await _usuarioRepo.GetByCpfAsync(usuarioModel.Cpf);
+            if(cpfEmUso != null)
+                throw new ConflictException("O CPF informado já está em uso.");
+
+            var emailEmUso = await _usuarioRepo.GetByEmailAsync(usuarioModel.Email);
+            if(emailEmUso != null)
+                throw new ConflictException("O E-mail informado já está em uso.");
+
+            usuarioModel.SenhaHash = _passwordHasher.HashPassword(usuarioModel, dto.Senha);
+            usuarioModel.Perfil = PerfilUsuario.Admin;
+
+            var criado = await _usuarioRepo.CreateAsync(usuarioModel);
+            return criado.ToUsuarioDto();
+        }
+
         public async Task<UsuarioDto> UpdateAsync(int id, UpdateUsuarioDto dto)
         {
             var usuarioModel = dto.ToUsuarioFromUpdateDto();
@@ -88,6 +107,16 @@ namespace api.Services
             if(atualizado == null)
                 throw new NotFoundException("Usuário não encontrado.");
             return atualizado.ToUsuarioDto();
+        }
+
+        public async Task<UsuarioDto> AlterarAdminAsync(int id)
+        {
+            var usuarioModel = await _usuarioRepo.GetByIdAsync(id);
+            if(usuarioModel == null)
+                throw new NotFoundException("Nenhum usuário encontrado com o Id informado.");
+
+            await _usuarioRepo.AlterarUsuarioAdminAsync(usuarioModel.Id);
+            return usuarioModel.ToUsuarioDto();
         }
 
         public async Task AlterarSenhaAsync(int id, AlterarSenhaDto dto)
@@ -112,8 +141,12 @@ namespace api.Services
         public async Task DeleteAsync(int id)
         {
             var existente = await _usuarioRepo.GetByIdAsync(id);
+            
             if(existente == null)
                 throw new NotFoundException("Nenhum usuário encontrado com esse Id.");
+
+            if(await _usuarioRepo.PossuiPedidosAsync(id))
+                throw new ConflictException("Um usuário que possuí pedidos não pode ser excluído.");
 
             await _usuarioRepo.DeleteAsync(id);
         }
