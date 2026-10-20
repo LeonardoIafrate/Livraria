@@ -21,8 +21,9 @@ namespace api.Exceptions
                 ConflictException => (StatusCodes.Status409Conflict, "Conflito com dados existentes"),
                 UnauthorizedException => (StatusCodes.Status401Unauthorized, "Não autorizado."),
                 ForbiddenException => (StatusCodes.Status403Forbidden, "Acesso negado."),
+                DbUpdateConcurrencyException => (StatusCodes.Status409Conflict, "Conflito de concorrência."),
                 BadRequestException => (StatusCodes.Status400BadRequest, "Requisição inválida"),
-                _ => (StatusCodes.Status500InternalServerError, "Erro interno de servidor")
+                _ => (StatusCodes.Status500InternalServerError, "Erro interno de servidor"),
             };
 
             if(status == StatusCodes.Status500InternalServerError)

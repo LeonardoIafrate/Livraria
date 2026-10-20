@@ -14,6 +14,7 @@ namespace api.Interfaces
         Task<UsuarioDto> GetByCpfAsync(string cpf);
         Task<UsuarioDto> CreateAsync(CreateUsuarioDto dto);
         Task<UsuarioDto> UpdateAsync(int id, UpdateUsuarioDto dto);
+        Task AlterarSenhaAsync(int id, AlterarSenhaDto alterarSenhaDto);
         Task DeleteAsync(int id);
         Task DesativarAsync(int id);
     }

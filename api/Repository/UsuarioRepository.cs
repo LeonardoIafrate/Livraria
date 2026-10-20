@@ -66,6 +66,19 @@ namespace api.Repository
             return existente;
         }
 
+        public async Task<bool> UpdateSenhaAsync(int id, string senhaHash)
+        {
+            var existente = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Id == id);
+
+            if(existente == null)
+                return false;
+
+            existente.SenhaHash = senhaHash;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<Usuario?> DeleteAsync(int id)
         {
             var usuarioModel = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Id == id);

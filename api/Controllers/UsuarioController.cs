@@ -41,6 +41,13 @@ namespace api.Controllers
             return Ok(atualizado);
         }
 
+        [HttpPut("me/senha")]
+        public async Task<IActionResult> AlterarSenha([FromBody] AlterarSenhaDto dto)
+        {
+            await _usuarioService.AlterarSenhaAsync(User.GetUsuarioByID(), dto);
+            return NoContent();
+        }
+
         [HttpPatch("me/desativar")]
         public async Task<IActionResult> Desativar()
         {

@@ -89,6 +89,25 @@ namespace api.Services
                 throw new NotFoundException("Usuário não encontrado.");
             return atualizado.ToUsuarioDto();
         }
+
+        public async Task AlterarSenhaAsync(int id, AlterarSenhaDto dto)
+        {
+            var usuario = await _usuarioRepo.GetByIdAsync(id);
+
+            if(usuario == null)
+                throw new NotFoundException("Nenhum usuário encontrado");
+
+            var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.SenhaHash, dto.SenhaAtual);
+
+            if(resultado == PasswordVerificationResult.Failed)
+                throw new BadRequestException("A senha atual está incorreta");
+
+            if(dto.NovaSenha == dto.SenhaAtual)
+                throw new BadRequestException("A nova senha deve ser diferente da atual");
+
+            var novoHash = _passwordHasher.HashPassword(usuario, dto.NovaSenha);
+            await _usuarioRepo.UpdateSenhaAsync(usuario.Id, novoHash);
+        }
         
         public async Task DeleteAsync(int id)
         {
