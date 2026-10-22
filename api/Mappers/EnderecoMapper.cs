@@ -39,24 +39,47 @@ namespace api.Mappers
             };
         }
 
-        public static string ToEnderecoFormatado(this Endereco endereco)
+        public static EnderecoEntrega ToEnderecoEntrega(this Endereco endereco)
+        {
+            return new EnderecoEntrega
+            {
+                Cep = endereco.Cep,
+                Rua = endereco.Rua,
+                Numero = endereco.Numero,
+                Complemento = endereco.Complemento,
+                Bairro = endereco.Bairro,
+                Cidade = endereco.Cidade,
+                Uf = endereco.Uf
+            };
+        }
+        public static string ToEnderecoFormatado(this EnderecoEntrega e)
+        {
+            return Formatar(e.Rua, e.Numero, e.Bairro, e.Cidade, e.Uf, e.Complemento, e.Cep);
+        }
+
+        public static string ToEnderecoFormatado(this Endereco e)
+        {
+            return Formatar(e.Rua, e.Numero, e.Bairro, e.Cidade, e.Uf, e.Complemento, e.Cep);
+        }
+
+
+         private static string Formatar(
+            string rua, string numero, string bairro, string cidade, string uf,
+            string? complemento, string cep)
         {
             var linhas = new List<string>
             {
-              $"{endereco.Rua}, {endereco.Numero}",
-              endereco.Bairro,
-              $"{endereco.Cidade}, {endereco.Uf}"  
+                $"{rua}, {numero}",
+                bairro,
+                $"{cidade}/{uf}"
             };
+ 
+            if (!string.IsNullOrWhiteSpace(complemento))
+                linhas.Add(complemento);
 
-            if(!string.IsNullOrWhiteSpace(endereco.Complemento))
-                linhas.Add(endereco.Complemento);
-
+            linhas.Add(cep.Length == 8 ? $"{cep[..5]}-{cep[5..]}" : cep);
+ 
             return string.Join("\n", linhas);
-        }
-
-        private static string FormatarCep(string cep)
-        {
-            return cep.Length == 8 ? $"{cep[5]}-{cep[5..]}" : cep;
         }
     }
 }

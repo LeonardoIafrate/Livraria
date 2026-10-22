@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Endereco;
-using api.Models;
 
 namespace api.Interfaces
 {
@@ -14,6 +9,6 @@ namespace api.Interfaces
         Task<EnderecoDto> CreateAsync(int usuarioId, CreateEnderecoDto dto);
         Task<EnderecoDto> UpdateAsync(int id, int usuarioId,UpdateEnderecoDto dto);
         Task<EnderecoDto> DefinirPrincipalAsync(int id, int usuarioId);
-        Task DesativarAsync(int id, int usuarioId);
+        Task ExcluirAsync(int id, int usuarioId);
     }
 }

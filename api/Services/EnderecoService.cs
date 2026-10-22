@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Endereco;
 using api.Exceptions;
 using api.Interfaces;
@@ -79,13 +75,14 @@ namespace api.Services
             return atualizado.ToEnderecoDto();
         }
 
-        public async Task DesativarAsync(int id, int usuarioId)
+        public async Task ExcluirAsync(int id, int usuarioId)
         {
             var existente = await ObterEnderecoAtivo(id, usuarioId);
             
             var eraPrincipal = existente.Principal;
 
-            await _enderecoRepo.DesativaAsync(id);
+
+            await _enderecoRepo.DeleteAsync(id);
 
             if (eraPrincipal)
             {

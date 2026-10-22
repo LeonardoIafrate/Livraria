@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dtos.Endereco;
 using api.Helpers;
 using api.Interfaces;
@@ -58,9 +54,9 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Desativar([FromRoute] int id)
+        public async Task<IActionResult> Excluir([FromRoute] int id)
         {
-            await _enderecoService.DesativarAsync(id, User.GetUsuarioByID());
+            await _enderecoService.ExcluirAsync(id, User.GetUsuarioByID());
             return NoContent();
         }
     }

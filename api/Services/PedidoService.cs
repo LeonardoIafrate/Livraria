@@ -67,7 +67,7 @@ namespace api.Services
             var pedido = new Pedido
             {
               UsuarioId = usuarioId,
-              EnderecoId = endereco.Id,
+              EnderecoEntrega = endereco.ToEnderecoEntrega(),
               Status = StatusPedido.Pendente  
             };
 
@@ -104,7 +104,7 @@ namespace api.Services
             if(endereco == null || !endereco.Ativo || endereco.UsuarioId != usuarioId)
                 throw new BadRequestException("O endereço informado não existe.");
 
-            var atualizado = await _pedidoRepo.UpdateEnderecoPedidoAsync(id, endereco.Id);
+            var atualizado = await _pedidoRepo.UpdateEnderecoPedidoAsync(id, endereco.ToEnderecoEntrega());
             if(atualizado == null)
                 throw new NotFoundException("Nenhum pedido econtrado.");
 

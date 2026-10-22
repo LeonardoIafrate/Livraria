@@ -38,7 +38,7 @@ namespace api.Services
             var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.SenhaHash, dto.Senha);
 
             if(resultado == PasswordVerificationResult.Failed || !usuario.Ativo)
-                throw new UnauthorizedAccessException(CredenciaisInvalidas);
+                throw new UnauthorizedException(CredenciaisInvalidas);
 
             return _tokenService.GerarToken(usuario);
         }

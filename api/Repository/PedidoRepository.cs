@@ -18,7 +18,6 @@ namespace api.Repository
         {
             return await _dbContext.Pedido.AsNoTracking()
                             .Include(p => p.Usuario)
-                            .Include(p => p.Endereco)
                             .Include(p => p.Itens)
                                 .ThenInclude(i => i.Livro)
                             .OrderByDescending(p => p.DataPedido)
@@ -29,7 +28,6 @@ namespace api.Repository
         {
             return await _dbContext.Pedido
                             .Include(p => p.Usuario)
-                            .Include(p => p.Endereco)
                             .Include(p => p.Itens)
                                 .ThenInclude(i => i.Livro)
                             .FirstOrDefaultAsync(p => p.Id == id);
@@ -41,7 +39,6 @@ namespace api.Repository
                             .AsNoTracking()
                             .Where(p => p.UsuarioId == usuarioId)
                             .Include(p => p.Usuario)
-                            .Include(p => p.Endereco)
                             .Include(p => p.Itens)
                                 .ThenInclude(i => i.Livro)
                             .OrderByDescending(p => p.DataPedido)
@@ -56,7 +53,6 @@ namespace api.Repository
                             .AsNoTracking()
                             .Where(p => p.Usuario.Nome.Contains(nome))
                             .Include(p => p.Usuario)
-                            .Include(p => p.Endereco)
                             .Include(p => p.Itens)
                                 .ThenInclude(i => i.Livro)
                             .OrderByDescending(p => p.DataPedido)
@@ -71,16 +67,22 @@ namespace api.Repository
             return await GetByIdAsync(pedidoModel.Id) ?? pedidoModel;
         }
 
-        public async Task<Pedido?> UpdateEnderecoPedidoAsync(int id, int enderecoId)
+        public async Task<Pedido?> UpdateEnderecoPedidoAsync(int id, EnderecoEntrega novoEndereco)
         {
             var pedidoExistente = await _dbContext.Pedido.FirstOrDefaultAsync(p => p.Id == id);
             if(pedidoExistente == null)
                 return null;
 
-            pedidoExistente.EnderecoId = enderecoId;
+            pedidoExistente.EnderecoEntrega.Cep = novoEndereco.Cep;
+            pedidoExistente.EnderecoEntrega.Rua = novoEndereco.Rua;
+            pedidoExistente.EnderecoEntrega.Numero = novoEndereco.Numero;
+            pedidoExistente.EnderecoEntrega.Complemento = novoEndereco.Complemento;
+            pedidoExistente.EnderecoEntrega.Bairro = novoEndereco.Bairro;
+            pedidoExistente.EnderecoEntrega.Cidade = novoEndereco.Cidade;
+            pedidoExistente.EnderecoEntrega.Uf = novoEndereco.Uf;
             await _dbContext.SaveChangesAsync();
 
-            return pedidoExistente;
+            return await GetByIdAsync(id);
         }
 
         public async Task<Pedido?> AtualizarStatusAsync(int id, StatusPedido status)

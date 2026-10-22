@@ -81,14 +81,13 @@ namespace api.Repository
             return endereco;
         }
 
-        public async Task<Endereco?> DesativaAsync(int id)
+        public async Task<Endereco?> DeleteAsync(int id)
         {
             var enderecoModel = await _dbContext.Endereco.FirstOrDefaultAsync(e => e.Id == id);
             if(enderecoModel == null)
                 return null;
 
-            enderecoModel.Ativo = false;
-            enderecoModel.Principal = false;
+            _dbContext.Endereco.Remove(enderecoModel);
             await _dbContext.SaveChangesAsync();
             
             return enderecoModel;

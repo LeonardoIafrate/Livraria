@@ -319,9 +319,6 @@ namespace api.Migrations
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EnderecoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -335,8 +332,6 @@ namespace api.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EnderecoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -485,19 +480,61 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Pedido", b =>
                 {
-                    b.HasOne("api.Models.Endereco", "Endereco")
-                        .WithMany("Pedidos")
-                        .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("api.Models.Usuario", "Usuario")
                         .WithMany("Pedidos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Endereco");
+                    b.OwnsOne("api.Models.EnderecoEntrega", "EnderecoEntrega", b1 =>
+                        {
+                            b1.Property<int>("PedidoId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Bairro")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("Cep")
+                                .IsRequired()
+                                .HasMaxLength(8)
+                                .HasColumnType("nvarchar(8)");
+
+                            b1.Property<string>("Cidade")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("Complemento")
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("Numero")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)");
+
+                            b1.Property<string>("Rua")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)");
+
+                            b1.Property<string>("Uf")
+                                .IsRequired()
+                                .HasMaxLength(2)
+                                .HasColumnType("nvarchar(2)");
+
+                            b1.HasKey("PedidoId");
+
+                            b1.ToTable("Pedido");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PedidoId");
+                        });
+
+                    b.Navigation("EnderecoEntrega")
+                        .IsRequired();
 
                     b.Navigation("Usuario");
                 });
@@ -505,11 +542,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Editora", b =>
                 {
                     b.Navigation("Livros");
-                });
-
-            modelBuilder.Entity("api.Models.Endereco", b =>
-                {
-                    b.Navigation("Pedidos");
                 });
 
             modelBuilder.Entity("api.Models.Livro", b =>

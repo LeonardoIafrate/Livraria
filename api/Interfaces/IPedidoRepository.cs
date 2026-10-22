@@ -9,7 +9,7 @@ namespace api.Interfaces
         Task<List<Pedido>> GetByIdUsuarioAsync(int usuarioId);
         Task<List<Pedido>> GetByNomeUsuarioAsync(string nomeUsuario);
         Task<Pedido> CreatePedidoAsync(Pedido pedidoModel);
-        Task<Pedido?> UpdateEnderecoPedidoAsync(int id, int enderecoId);
+        Task<Pedido?> UpdateEnderecoPedidoAsync(int id, EnderecoEntrega enderecoEntrega);
         Task<Pedido?> AtualizarStatusAsync(int id, StatusPedido status);
         Task<Pedido?> CancelarPedidoAsync(int id);
         Task<bool> ExistsAsync(int id);

@@ -10,8 +10,7 @@ namespace api.Models
         public Usuario Usuario { get; set; } = null!; 
         public int UsuarioId { get; set; }
 
-        public Endereco Endereco { get; set; } = null!;
-        public int EnderecoId { get; set; }        
+        public EnderecoEntrega EnderecoEntrega { get; set; } = null!;  
 
         public List<ItemPedido> Itens { get; set; } = new();
     }

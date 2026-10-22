@@ -28,10 +28,18 @@ namespace api.Data.Configurations
                    .HasForeignKey(p => p.UsuarioId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.Endereco)
-                   .WithMany(e => e.Pedidos)
-                   .HasForeignKey(p => p.EnderecoId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            builder.OwnsOne(p => p.EnderecoEntrega, e =>
+            {
+                e.Property(x => x.Cep).IsRequired().HasMaxLength(8);
+                e.Property(x => x.Rua).IsRequired().HasMaxLength(150);
+                e.Property(x => x.Numero).IsRequired().HasMaxLength(10);
+                e.Property(x => x.Complemento).HasMaxLength(100);
+                e.Property(x => x.Bairro).IsRequired().HasMaxLength(100);
+                e.Property(x => x.Cidade).IsRequired().HasMaxLength(100);
+                e.Property(x => x.Uf).IsRequired().HasMaxLength(2);
+            });
+
+            builder.Navigation(p => p.EnderecoEntrega).IsRequired();
         }
     }
 }

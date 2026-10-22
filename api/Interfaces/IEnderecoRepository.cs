@@ -10,6 +10,6 @@ namespace api.Interfaces
         Task<Endereco> CreateAsync(Endereco enderecoModel);
         Task<Endereco?> UpdateAsync(int id, Endereco enderecoModel);
         Task<Endereco?> DefinirPrincipalAsync(int id);
-        Task<Endereco?> DesativaAsync(int id); 
+        Task<Endereco?> DeleteAsync(int id); 
     }
 }
