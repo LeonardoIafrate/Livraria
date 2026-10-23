@@ -131,7 +131,7 @@ namespace api.Services
             var pedido = await ObterPedidoAcessivelAsync(id, usuarioId, ehAdmin);
 
             if(pedido.Status is not (StatusPedido.Pendente or StatusPedido.Pago))
-                throw new NotFoundException("Só é possível cancelar pedidos pendentes ou pagos.");
+                throw new ConflictException("Só é possível cancelar pedidos pendentes ou pagos.");
 
             var cancelado = await _pedidoRepo.CancelarPedidoAsync(id);
             if(cancelado == null)
