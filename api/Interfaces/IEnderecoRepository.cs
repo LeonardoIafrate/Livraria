@@ -6,7 +6,7 @@ namespace api.Interfaces
     {
         Task<List<Endereco>> GetByUsuarioIdAsync(int usuarioId);
         Task<Endereco?> GetByIdAsync(int id);
-        Task<bool > PossuiEnderecoAtivo(int usuarioId);
+        Task<bool > PossuiEnderecoAtivoAsync(int usuarioId);
         Task<Endereco> CreateAsync(Endereco enderecoModel);
         Task<Endereco?> UpdateAsync(int id, Endereco enderecoModel);
         Task<Endereco?> DefinirPrincipalAsync(int id);

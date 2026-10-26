@@ -28,6 +28,7 @@ namespace api.Services
         public async Task<EnderecoDto> GetByIdAsync(int id, int usuarioId)
         {
             var endereco = await ObterEnderecoAtivo(id, usuarioId);
+
             return endereco.ToEnderecoDto();
         }
 
@@ -39,7 +40,7 @@ namespace api.Services
             var enderecoModel = dto.ToEnderecoFromBaseDto();
             enderecoModel.UsuarioId = usuarioId;
 
-            var primeiro = !await _enderecoRepo.PossuiEnderecoAtivo(usuarioId);
+            var primeiro = !await _enderecoRepo.PossuiEnderecoAtivoAsync(usuarioId);
             enderecoModel.Principal = primeiro;
 
             var criado = await _enderecoRepo.CreateAsync(enderecoModel);
@@ -65,6 +66,7 @@ namespace api.Services
         public async Task<EnderecoDto> DefinirPrincipalAsync(int id, int usuarioId)
         {
             var existente = await ObterEnderecoAtivo(id, usuarioId);
+
             if(existente.Principal)
                 return existente.ToEnderecoDto();
 
@@ -77,10 +79,9 @@ namespace api.Services
 
         public async Task ExcluirAsync(int id, int usuarioId)
         {
-            var existente = await ObterEnderecoAtivo(id, usuarioId);
+            var endereco = await ObterEnderecoAtivo(id, usuarioId);
             
-            var eraPrincipal = existente.Principal;
-
+            var eraPrincipal = endereco.Principal;
 
             await _enderecoRepo.DeleteAsync(id);
 
@@ -97,7 +98,8 @@ namespace api.Services
         private async Task<Endereco> ObterEnderecoAtivo(int id, int usuarioId)
         {
             var endereco = await _enderecoRepo.GetByIdAsync(id);
-            if(endereco == null || !endereco.Ativo)
+
+            if(endereco == null || !endereco.Ativo || endereco.UsuarioId != usuarioId)
                 throw new NotFoundException("Nenhum endereço encontrado com esse Id.");
 
             return endereco;

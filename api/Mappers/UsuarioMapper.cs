@@ -26,7 +26,7 @@ namespace api.Mappers
             return new Usuario
             {
               Nome = dto.Nome.Trim(),
-              Email = dto.Email.Trim(),
+              Email = dto.Email.Trim().ToLowerInvariant(),
               Cpf = CpfHellper.SomenteDigitos(dto.Cpf),
               DataNascimento = dto.DataNascimento,
               Ativo = true,
@@ -42,7 +42,7 @@ namespace api.Mappers
             return new Usuario
             {
               Nome = dto.Nome.Trim(),
-              Email = dto.Email.Trim(),
+              Email = dto.Email.Trim().ToLowerInvariant(),
               DataNascimento = dto.DataNascimento  
             };
         }

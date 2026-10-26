@@ -33,7 +33,11 @@ namespace api.Exceptions
             {
                 Status = status,
                 Title = title,
-                Detail = status == StatusCodes.Status500InternalServerError ? null : exception.Message
+                Detail = status == StatusCodes.Status500InternalServerError 
+                    ? null 
+                    : exception is DbUpdateConcurrencyException
+                        ? "Os dados foram alterados por outra operação ao mesmo tempo. Tente novamente."
+                        : exception.Message
             };
 
             httpContext.Response.StatusCode = status;

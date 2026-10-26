@@ -27,7 +27,7 @@ namespace api.Repository
             return await _dbContext.Endereco.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<bool> PossuiEnderecoAtivo(int usuarioId)
+        public async Task<bool> PossuiEnderecoAtivoAsync(int usuarioId)
         {
             return await _dbContext.Endereco.AnyAsync(e => e.UsuarioId == usuarioId && e.Ativo);
         }
