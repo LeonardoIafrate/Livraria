@@ -8,7 +8,7 @@ namespace api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/endereco")]
+    [Route("api/enderecos")]
     public class EnderecoController : ControllerBase
     {
         private readonly IEnderecoService _enderecoService;
@@ -50,7 +50,7 @@ namespace api.Controllers
         public async Task<ActionResult<EnderecoDto>> DefinirPrincipal([FromRoute]int id)
         {
             var atualizado = await _enderecoService.DefinirPrincipalAsync(id, User.GetUsuarioByID());
-            return Ok(id);
+            return Ok(atualizado);
         }
 
         [HttpDelete("{id:int}")]

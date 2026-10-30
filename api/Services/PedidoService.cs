@@ -137,7 +137,7 @@ namespace api.Services
             if(cancelado == null)
                 throw new NotFoundException("Nenhum pedido encontrado com esse Id.");
 
-            return pedido.ToPedidoDto();
+            return cancelado.ToPedidoDto();
         }
 
         private async Task<Pedido> ObterPedidoAcessivelAsync(int id, int usuarioId, bool ehAdmin)
