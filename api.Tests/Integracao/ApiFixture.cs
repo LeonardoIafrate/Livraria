@@ -15,7 +15,7 @@ namespace api.Tests.Integracao
 {
     public class ApiFixture : IAsyncLifetime
     {
-        public const string EmailAdmin = "admin.teste@livraria.com";
+        public const string EmailAdmin = "admin.teste@libcore.com";
         public const string SenhaAdmin = "Admin12345";
 
         private readonly MsSqlContainer _container = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest").Build();
@@ -63,7 +63,7 @@ namespace api.Tests.Integracao
 
             var conexao = new SqlConnectionStringBuilder(_container.GetConnectionString())
             {
-              InitialCatalog = "LivrariaApiTestes",
+              InitialCatalog = "LibCoreApiTestes",
               TrustServerCertificate = true 
             }.ConnectionString;
 
