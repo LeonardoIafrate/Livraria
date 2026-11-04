@@ -50,7 +50,7 @@ namespace api.Services
         {
            var categoriaModel = updateDto.ToCategoriaFromUpdate();
 
-            var categoriaExistente = _categoriaRepo.GetByIdAsync(id);
+            var categoriaExistente = await _categoriaRepo.GetByIdAsync(id);
             if(categoriaExistente == null)
                 throw new NotFoundException("Não existe uma categoria com este Id");
             

@@ -41,6 +41,10 @@ services:
       ASPNETCORE_HTTP_PORTS: 8080
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=libcore;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=false"
       Jwt__Chave: "${Jwt_Chave}"
+      BootstrapAdmin__Name: ${BOOTSTRAP_ADMIN_NAME}
+      BootstrapAdmin__Email: ${BOOTSTRAP_ADMIN_EMAIL}
+      BootstrapAdmin__Cpf: ${BOOTSTRAP_ADMIN_CPF}
+      BootstrapAdmin__Password: ${BOOTSTRAP_ADMIN_PASSWORD}
 
     depends_on:
       db:
