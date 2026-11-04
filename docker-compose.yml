@@ -10,7 +10,7 @@ services:
       MSSQL_PID: Developer
 
     ports: 
-      - "1433:1433"
+      - "127.0.0.1:1433:1433"
 
     volumes:
       - sqlserver_data:/var/opt/mssql
@@ -40,11 +40,11 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: 8080
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=libcore;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=false"
-      Jwt__Chave: "${Jwt_Chave}"
-      BootstrapAdmin__Name: ${BOOTSTRAP_ADMIN_NAME}
-      BootstrapAdmin__Email: ${BOOTSTRAP_ADMIN_EMAIL}
-      BootstrapAdmin__Cpf: ${BOOTSTRAP_ADMIN_CPF}
-      BootstrapAdmin__Password: ${BOOTSTRAP_ADMIN_PASSWORD}
+      Jwt__Chave: "${JWT_CHAVE:?Defina JWT_CHAVE no .env}"
+      BootstrapAdmin__Name: ${BOOTSTRAP_ADMIN_NAME:?Defina BOOTSTRAP_ADMIN_NAME no .env}
+      BootstrapAdmin__Email: ${BOOTSTRAP_ADMIN_EMAIL:?Defina BOOTSTRAP_ADMIN_EMAIL no .env}
+      BootstrapAdmin__Cpf: ${BOOTSTRAP_ADMIN_CPF:?Defina BOOTSTRAP_ADMIN_CPF no .env}
+      BootstrapAdmin__Password: ${BOOTSTRAP_ADMIN_PASSWORD:?Defina BOOTSTRAP_ADMIN_PASSWORD no .env}
 
     depends_on:
       db:

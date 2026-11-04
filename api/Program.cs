@@ -107,18 +107,23 @@ builder.Services.AddSwaggerGen(option =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    await dbContext.Database.MigrateAsync();
+        await dbContext.Database.MigrateAsync();
 
-    var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
-    await initializer.InitializeAsync();
+        var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync();
 
-    var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("CatalogoInicial");
+        var logger = scope.ServiceProvider
+            .GetRequiredService<ILoggerFactory>()
+            .CreateLogger("CatalogoInicial");
 
-    await CatalogoInicial.SemearAsync(dbContext, logger);
+        await CatalogoInicial.SemearAsync(dbContext, logger);
+    }
 }
 
 app.UseExceptionHandler();
@@ -130,7 +135,10 @@ if (app.Environment.IsDevelopment())
 
 }
 
-app.UseHttpsRedirection();
+if(!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
