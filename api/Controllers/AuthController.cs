@@ -1,6 +1,7 @@
 using api.Dtos.Auth;
 using api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace api.Controllers
 {
@@ -15,6 +16,7 @@ namespace api.Controllers
             _authService = authService;
         }
 
+        [EnableRateLimiting("login")]
         [HttpPost("login")]
         public async Task<ActionResult<TokenDto>> Login([FromBody] LoginDto dto)
         {

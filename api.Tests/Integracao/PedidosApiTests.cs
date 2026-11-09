@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http.Json;
 using api.Dtos.Endereco;
 using api.Dtos.Pedido;
-using Renci.SshNet.Sftp;
 using Xunit;
 
 namespace api.Tests.Integracao
@@ -156,7 +155,7 @@ namespace api.Tests.Integracao
             var enderecoDeB = await ObterIdDoPrimeiroEnderecoAsync(clienteB);
 
             Assert.Equal(HttpStatusCode.NotFound, (await clienteB.GetAsync($"/api/pedidos/{pedido.Id}")).StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, (await clienteB.PatchAsync($"/api/pedidos{pedido.Id}/cancelar", new StringContent(""))).StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, (await clienteB.PatchAsync($"/api/pedidos/{pedido.Id}/cancelar", new StringContent(""))).StatusCode);
             Assert.Equal(HttpStatusCode.NotFound, (await clienteB.PatchAsync($"/api/pedidos/{pedido.Id}/endereco",
                                                              JsonContent.Create(new AlterarEnderecoPedidoDto {EnderecoId = enderecoDeB}))).StatusCode);
             

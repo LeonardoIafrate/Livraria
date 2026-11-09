@@ -79,6 +79,13 @@ namespace api.Repository
             return true;
         }
 
+        public async Task AtualizarBloqueioAsync(int id, int tentativasFalhas, DateTime? bloqueadoAte)
+        {
+            await _dbContext.Usuario.Where(u => u.Id == id).ExecuteUpdateAsync(s => s
+                        .SetProperty(u => u.TentativasFalhas, tentativasFalhas)
+                        .SetProperty(u => u.BloqueadoAte, bloqueadoAte));
+        }
+
         public async Task<Usuario?> AlterarUsuarioAdminAsync(int id)
         {
             var usuarioModel = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Id == id);

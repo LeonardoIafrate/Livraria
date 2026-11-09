@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using api.Dtos.Auth;
 using api.Dtos.Endereco;
+using api.Helpers;
 using Xunit;
 
 namespace api.Tests.Integracao
@@ -131,6 +132,26 @@ namespace api.Tests.Integracao
             Assert.Equal(HttpStatusCode.NotFound, (await clienteA.DeleteAsync($"/api/enderecos/{idDoEnderecoDeB}")).StatusCode);
 
             Assert.Equal(HttpStatusCode.OK, (await clienteB.GetAsync($"/api/enderecos/{idDoEnderecoDeB}")).StatusCode);
+        }
+
+        [Fact]
+        public async Task Login_AposVariasFalhas_BloqueiaMesmoComSenhaCorreta()
+        {
+            var (email, senha) = await CadastrarClienteAsync();
+            var cliente = Fixture.CriarCliente();
+
+            for (var i = 0; i < PoliticaDeLogin.MaxTentativas; i++)
+            {
+                var falha = await cliente.PostAsJsonAsync("/api/auth/login",
+                    new LoginDto { Email = email, Senha = "SenhaErrada999" });
+
+                Assert.Equal(HttpStatusCode.Unauthorized, falha.StatusCode);
+            }
+
+            var resposta = await cliente.PostAsJsonAsync("/api/auth/login",
+                new LoginDto { Email = email, Senha = senha });
+
+            Assert.Equal(HttpStatusCode.Unauthorized, resposta.StatusCode);
         }
 
         private static async Task<string?> LerDetalheAsync(HttpResponseMessage resposta)

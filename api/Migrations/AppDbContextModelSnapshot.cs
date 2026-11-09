@@ -354,6 +354,9 @@ namespace api.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("BloqueadoAte")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Cpf")
                         .IsRequired()
                         .HasMaxLength(11)
@@ -384,6 +387,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("TentativasFalhas")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

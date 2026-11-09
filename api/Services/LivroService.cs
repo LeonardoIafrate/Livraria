@@ -84,7 +84,7 @@ namespace api.Services
                 throw new NotFoundException("Livro não encontrado.");
 
             if(!await _editoraRepo.ExistsAsync(livroModel.EditoraId))
-                throw new NotFoundException("A editora informada não foi encontrada.");
+                throw new BadRequestException("A editora informada não foi encontrada.");
             
             var isbnEmUso = await _livroRepo.GetByIsbnAsync(livroModel.Isbn);
             if(isbnEmUso != null && isbnEmUso.Id != id)

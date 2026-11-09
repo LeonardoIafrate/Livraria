@@ -12,10 +12,13 @@ namespace api.Services
     {
         private readonly IUsuarioRepository _usuarioRepo;
         private readonly IPasswordHasher<Usuario> _passwordHasher;
-        public UsuarioService(IUsuarioRepository usuarioRepo, IPasswordHasher<Usuario> passwordHasher)
+        private readonly TimeProvider _tempo;
+
+        public UsuarioService(IUsuarioRepository usuarioRepo, IPasswordHasher<Usuario> passwordHasher, TimeProvider tempo)
         {
             _usuarioRepo = usuarioRepo;
             _passwordHasher = passwordHasher;
+            _tempo = tempo;
         }
 
         public async Task<List<UsuarioDto>> GetAllAsync(string? nome)
@@ -93,16 +96,28 @@ namespace api.Services
         {
             var usuario = await _usuarioRepo.GetByIdAsync(id);
 
-            if(usuario == null)
+            if(usuario == null || !usuario.Ativo)
                 throw new NotFoundException("Nenhum usuário encontrado.");
 
-            if(usuario.Ativo == false)
-                throw new NotFoundException("Nenhum usuário encontrado.");
+            var agora = _tempo.GetUtcNow().UtcDateTime;
+
+            if(usuario.EstaBloqueado(agora))
+                throw new BadRequestException("Muitas tentativas incorretas. Tente novamente mais tarde.");
 
             var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.SenhaHash, dto.SenhaAtual);
 
             if(resultado == PasswordVerificationResult.Failed)
-                throw new BadRequestException("A senha atual está incorreta");
+            {
+                usuario.RegistrarFalhasDeSenha(agora, PoliticaDeLogin.MaxTentativas, PoliticaDeLogin.DuracaoBloqueio);
+                throw new BadRequestException("Senha atual incorreta.");
+            }
+
+
+            if (usuario.TentativasFalhas > 0 || usuario.BloqueadoAte != null)
+            {
+                usuario.LimparFalhas();
+                await _usuarioRepo.AtualizarBloqueioAsync(usuario.Id, usuario.TentativasFalhas, usuario.BloqueadoAte);
+            }
 
             if(dto.NovaSenha == dto.SenhaAtual)
                 throw new BadRequestException("A nova senha deve ser diferente da atual");

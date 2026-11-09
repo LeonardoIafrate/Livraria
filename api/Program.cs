@@ -13,6 +13,8 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 
@@ -51,8 +53,9 @@ builder.Services.AddScoped<DbInitializer>();
 
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddSingleton(TimeProvider.System);
 
 var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>() ?? new JwtSettings();
 
@@ -82,6 +85,28 @@ builder.Services
           ClockSkew = TimeSpan.Zero
         };
     });
+
+builder.Services.AddRateLimiter(opcoes =>
+{
+    var limiteLogin = builder.Configuration.GetValue("RateLimitng:Login:Limite",10);
+
+   opcoes.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+   opcoes.AddPolicy("login", contexto =>
+   {
+       var ambiente = contexto.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+       if(ambiente.IsEnvironment("Testing"))
+            return RateLimitPartition.GetNoLimiter("testes");
+
+        return RateLimitPartition.GetFixedWindowLimiter(contexto.Connection.RemoteIpAddress?.ToString()
+            ?? "desconhecido", _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1)
+            });
+   });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddControllers().AddRespostaDeValidacao();
@@ -142,6 +167,8 @@ if(!app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 

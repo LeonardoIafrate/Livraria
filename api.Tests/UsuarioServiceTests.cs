@@ -1,10 +1,12 @@
 using api.Dtos.Endereco;
 using api.Dtos.Usuario;
 using api.Exceptions;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using api.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Xunit;
 
@@ -13,11 +15,11 @@ namespace api.Tests.Services;
 public class UsuarioServiceTests
 {
     private const string SenhaAtual = "Senha123";
-
     private readonly IUsuarioRepository _usuarioRepo = Substitute.For<IUsuarioRepository>();
     private readonly PasswordHasher<Usuario> _hasher = new();
+    private readonly FakeTimeProvider _tempo = new(new DateTimeOffset(2026, 11, 5, 12, 0, 0, TimeSpan.Zero));
 
-    private UsuarioService CriarServico() => new(_usuarioRepo, _hasher);
+    private UsuarioService CriarServico() => new(_usuarioRepo, _hasher, _tempo);
     private Usuario CriarUsuario(int id = 1, string email = "ana@email.com", bool ativo = true)
     {
         var usuario = new Usuario
@@ -57,6 +59,135 @@ public class UsuarioServiceTests
         Email = email,
         DataNascimento = new DateTime(1990, 5, 20)
     };
+
+    private static AlterarSenhaDto SenhaAtualErradaDto() => new() { SenhaAtual = "errada123", NovaSenha = "NovaSenha456"};
+
+    private async Task FalharAlteracaoVezes(Usuario usuario, int vezes)
+    {
+        for(var i = 0; i < vezes; i++)
+        {
+            var antes = usuario.TentativasFalhas;
+
+            await Assert.ThrowsAsync<BadRequestException>(() => CriarServico().AlterarSenhaAsync(usuario.Id, SenhaAtualErradaDto()));
+
+            Assert.True(usuario.TentativasFalhas != antes || usuario.BloqueadoAte != null, 
+                "a falha da senha não foi registrada: o usuário foi encontrado?");
+        }
+    }
+
+    [Fact]
+    public async Task AlterarSenha_SenhaAtualErrada_IncrementaContadorEGrava()
+    {
+        var usuario = CriarUsuario();
+        _usuarioRepo.GetByIdAsync(1).Returns(usuario);
+
+        await Assert.ThrowsAsync<BadRequestException>(() =>
+            CriarServico().AlterarSenhaAsync(1, SenhaAtualErradaDto()));
+
+        Assert.Equal(1, usuario.TentativasFalhas);
+        await _usuarioRepo.Received(1).AtualizarBloqueioAsync(1, 1, null);
+    }
+
+    [Fact]
+    public async Task AlterarSenha_UltimaFalhaDoLimite_BloqueiaAConta()
+    {
+        var usuario = CriarUsuario();
+        _usuarioRepo.GetByIdAsync(1).Returns(usuario);
+
+        await FalharAlteracaoVezes(usuario, PoliticaDeLogin.MaxTentativas);
+
+        var esperado = _tempo.GetUtcNow().UtcDateTime.Add(PoliticaDeLogin.DuracaoBloqueio);
+        Assert.Equal(esperado, usuario.BloqueadoAte);
+        Assert.Equal(0, usuario.TentativasFalhas);
+        await _usuarioRepo.Received(1).AtualizarBloqueioAsync(1, 0, esperado);
+    }
+
+    [Fact]
+    public async Task AlterarSenha_ContaBloqueada_RejeitaMesmoComSenhaAtualCorreta()
+    {
+        var usuario = CriarUsuario();
+        _usuarioRepo.GetByIdAsync(1).Returns(usuario);
+        await FalharAlteracaoVezes(usuario, PoliticaDeLogin.MaxTentativas);
+
+        await Assert.ThrowsAsync<BadRequestException>(() =>
+            CriarServico().AlterarSenhaAsync(1,
+                new AlterarSenhaDto { SenhaAtual = SenhaAtual, NovaSenha = "NovaSenha456" }));
+
+        await _usuarioRepo.DidNotReceive().UpdateSenhaAsync(Arg.Any<int>(), Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task AlterarSenha_TentativaEnquantoBloqueado_NaoAdicionaTempoNemGrava()
+    {
+        var usuario = CriarUsuario();
+        _usuarioRepo.GetByIdAsync(1).Returns(usuario);
+        await FalharAlteracaoVezes(usuario, PoliticaDeLogin.MaxTentativas);
+        var bloqueio = usuario.BloqueadoAte;
+
+        await Assert.ThrowsAsync<BadRequestException>(() =>
+            CriarServico().AlterarSenhaAsync(1, SenhaAtualErradaDto()));
+
+        Assert.Equal(bloqueio, usuario.BloqueadoAte);
+        await _usuarioRepo.Received(PoliticaDeLogin.MaxTentativas)
+            .AtualizarBloqueioAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<DateTime?>());
+    }
+
+    [Fact]
+    public async Task AlterarSenha_AposOPrazoDoBloqueio_VoltaAFuncionar()
+    {
+        var usuario = CriarUsuario();
+        _usuarioRepo.GetByIdAsync(1).Returns(usuario);
+        await FalharAlteracaoVezes(usuario, PoliticaDeLogin.MaxTentativas);
+
+        _tempo.Advance(PoliticaDeLogin.DuracaoBloqueio + TimeSpan.FromSeconds(1));
+
+        await CriarServico().AlterarSenhaAsync(1,
+            new AlterarSenhaDto { SenhaAtual = SenhaAtual, NovaSenha = "NovaSenha456" });
+
+        Assert.Null(usuario.BloqueadoAte);
+        await _usuarioRepo.Received(1).UpdateSenhaAsync(1, Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task AlterarSenha_SenhaAtualCorreta_ZeraContadorDeFalhas()
+    {
+        var usuario = CriarUsuario();
+        usuario.TentativasFalhas = 2;
+        _usuarioRepo.GetByIdAsync(1).Returns(usuario);
+
+        await CriarServico().AlterarSenhaAsync(1,
+            new AlterarSenhaDto { SenhaAtual = SenhaAtual, NovaSenha = "NovaSenha456" });
+
+        Assert.Equal(0, usuario.TentativasFalhas);
+        await _usuarioRepo.Received(1).AtualizarBloqueioAsync(1, 0, null);
+    }
+
+    [Fact]
+    public async Task AlterarSenha_NovaIgualAAtual_ZeraContadorMesmoAssim()
+    {
+        var usuario = CriarUsuario();
+        usuario.TentativasFalhas = 2;
+        _usuarioRepo.GetByIdAsync(1).Returns(usuario);
+
+        await Assert.ThrowsAsync<BadRequestException>(() =>
+            CriarServico().AlterarSenhaAsync(1,
+                new AlterarSenhaDto { SenhaAtual = SenhaAtual, NovaSenha = SenhaAtual }));
+
+        Assert.Equal(0, usuario.TentativasFalhas);
+        await _usuarioRepo.DidNotReceive().UpdateSenhaAsync(Arg.Any<int>(), Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task AlterarSenha_UsuarioInativo_NaoGravaBloqueio()
+    {
+        _usuarioRepo.GetByIdAsync(1).Returns(CriarUsuario(ativo: false));
+
+        await Assert.ThrowsAsync<NotFoundException>(() =>
+            CriarServico().AlterarSenhaAsync(1, SenhaAtualErradaDto()));
+
+        await _usuarioRepo.DidNotReceive()
+            .AtualizarBloqueioAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<DateTime?>());
+    }
 
 
     [Fact]
