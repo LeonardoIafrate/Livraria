@@ -109,6 +109,7 @@ namespace api.Services
             if(resultado == PasswordVerificationResult.Failed)
             {
                 usuario.RegistrarFalhasDeSenha(agora, PoliticaDeLogin.MaxTentativas, PoliticaDeLogin.DuracaoBloqueio);
+                await _usuarioRepo.AtualizarBloqueioAsync(usuario.Id, usuario.TentativasFalhas, usuario.BloqueadoAte);
                 throw new BadRequestException("Senha atual incorreta.");
             }
 

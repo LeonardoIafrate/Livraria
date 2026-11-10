@@ -55,7 +55,7 @@ namespace api.Services
                 throw new NotFoundException("Não existe uma categoria com este Id");
             
             var categoriaEmUso = await _categoriaRepo.GetByGeneroAsync(categoriaModel.Genero);
-            if(categoriaEmUso != null)
+            if(categoriaEmUso != null && categoriaEmUso.Id != id)
                 throw new ConflictException($"O Gênero {categoriaEmUso.Genero} já existe.");
 
             var atualizada = await _categoriaRepo.UpdateAsync(id, categoriaModel);

@@ -54,7 +54,7 @@ namespace api.Services
                 throw new NotFoundException("Editora não encontrada.");
             
             var nomeEmUso = await _editoraRepo.GetByNameAsync(editoraModel.Nome);
-            if (nomeEmUso != null)
+            if (nomeEmUso != null && nomeEmUso.Id != id)
                 throw new ConflictException("Já existe uma editora com esse nome.");
             
             var atualizada = await _editoraRepo.UpdateAsync(id, editoraModel);
