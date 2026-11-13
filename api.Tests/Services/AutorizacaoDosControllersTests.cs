@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Xunit;
 
-namespace api.Tests
+namespace api.Tests.Services
 {
     public class AutorizacaoDosControllersTests
     {

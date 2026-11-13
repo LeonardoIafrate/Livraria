@@ -3,12 +3,10 @@ using api.Exceptions;
 using api.Interfaces;
 using api.Models;
 using api.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using Xunit;
-using Xunit.Runner.Common;
 
-namespace api.Tests
+namespace api.Tests.Services
 {
     public class LivroServiceTests
     {
@@ -166,7 +164,7 @@ namespace api.Tests
         {
             _editoraRepo.ExistsAsync(EditoraId).Returns(false);
 
-            await Assert.ThrowsAsync<NotFoundException>(() => CriarServico().CreateAsync(CriarDto()));
+            await Assert.ThrowsAsync<BadRequestException>(() => CriarServico().CreateAsync(CriarDto()));
 
             await _livroRepo.DidNotReceive().CreateAsync(Arg.Any<Livro>());
         }

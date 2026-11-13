@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
-namespace api.Tests
+namespace api.Tests.Services
 {
     public class GlobalExceptionHandlerTests
     {
@@ -33,7 +33,7 @@ namespace api.Tests
         [InlineData(typeof(ForbiddenException), 403)]
         [InlineData(typeof(NotFoundException), 404)]
         [InlineData(typeof(ConflictException), 409)]
-        public async Task ExcecaoDoProjeto_VirarOStatusCertoEMostraAMensagem(Type tipo, int statusEsperado)
+        public async Task ExcecaoDoProjeto_ViraOStatusCertoEMostraAMensagem(Type tipo, int statusEsperado)
         {
             var excecao = (Exception)Activator.CreateInstance(tipo, "mensagem de teste")!;
 
@@ -55,15 +55,15 @@ namespace api.Tests
         }
 
         [Fact]
-        public async Task ConflitoDeConcorrencia_Vira409ComMensagemLegivel()
+        public async Task ConflitoDeConcorrenciaDoEfCore_Vira409ComMensagemPadrao()
         {
-            var excecao = new DbUpdateConcurrencyException("mesnagem técnica internar do EF");
+            var excecao = new Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException("detalhe-interno-do-ef");
 
             var (status, corpo) = await Executar(excecao);
 
             Assert.Equal(409, status);
             Assert.Contains("Tente novamente", corpo);
-            Assert.DoesNotContain("Mensagem técnica interna do EF", corpo);
+            Assert.DoesNotContain("detalhe-interno-do-ef", corpo);
         }
     }
 }

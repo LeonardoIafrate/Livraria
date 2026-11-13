@@ -13,7 +13,7 @@ namespace api.Mappers
               Quantidade = estoque.Quantidade,
               DataAtualizacao = estoque.DataAtualizacao,
               LivroId = estoque.LivroId,
-              NomeLivro = estoque.Livro.Nome?? string.Empty  
+              NomeLivro = estoque.Livro?.Nome?? string.Empty  
             };
         }
 

@@ -259,5 +259,25 @@ namespace api.Tests.Integracao
             var doBanco = await cliente.GetFromJsonAsync<PedidoDto>($"/api/pedidos/{pedido.Id}");
             Assert.Contains("Rua das Flores", doBanco!.Endereco);
         }
+
+        [Fact]
+        public async Task Comprar_UltimaUnidadeEmParalelo_SoUmPedidoEhCriadoENuncaVendeAMais()
+        {
+            var livroId = await Fixture.CriarLivroAsync(estoque: 1);
+            var clienteA = await NovoClienteLogadoAsync();
+            var clienteB = await NovoClienteLogadoAsync();
+            var enderecoA = await ObterIdDoPrimeiroEnderecoAsync(clienteA);
+            var enderecoB = await ObterIdDoPrimeiroEnderecoAsync(clienteB);
+
+            var respostas = await Task.WhenAll(
+                clienteA.PostAsJsonAsync("/api/pedidos", NovoPedido(enderecoA, (livroId, 1))),
+                clienteB.PostAsJsonAsync("/api/pedidos", NovoPedido(enderecoB, (livroId, 1))));
+
+            var status = respostas.Select(r => r.StatusCode).ToList();
+
+            Assert.Single(status, s => s == HttpStatusCode.Created);
+            Assert.Single(status, s => s == HttpStatusCode.Conflict);
+            Assert.Equal(0, await Fixture.ObterEstoqueAsync(livroId));
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace api.Services
             var livroModel = createDto.ToLivroFromCreateDto();
 
             if(!await _editoraRepo.ExistsAsync(livroModel.EditoraId))
-                throw new NotFoundException("A editora informada não existe.");
+                throw new BadRequestException("A editora informada não existe.");
 
             var isbnEmUso = await _livroRepo.GetByIsbnAsync(livroModel.Isbn);
             if(isbnEmUso != null)

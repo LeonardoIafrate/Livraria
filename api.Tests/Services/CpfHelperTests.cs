@@ -1,7 +1,7 @@
 using api.Helpers;
 using Xunit;
 
-namespace api.Tests
+namespace api.Tests.Services
 {
     public class CpfHelperTests
     {

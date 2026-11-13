@@ -24,7 +24,7 @@ namespace api.Repository
 
         public async Task<Estoque?> GetByIdAsync(int id)
         {
-            return await _dbContext.Estoque.FirstOrDefaultAsync(e => e.Id == id);
+            return await _dbContext.Estoque.Include(e => e.Livro).FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<Estoque?> GetByLivroIdAsync(int livroId)

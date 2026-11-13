@@ -246,5 +246,27 @@ namespace api.Tests.Banco
             estoqueSegundo.Quantidade = 0;
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() => segundo.SaveChangesAsync());
         }
+
+        [Fact]
+        public async Task Migrations_ModeloEstaSincronizadoComAsMigrations()
+        {
+            await using var contexto = await _fixture.CriarBancoLimpoAsync();
+
+            Assert.False(contexto.Database.HasPendingModelChanges());
+        }
+
+        [Fact]
+        public async Task Email_EmOutraCapitalizacao_ViolaOIndiceUnico()
+        {
+            await using var contexto = await _fixture.CriarBancoLimpoAsync();
+            contexto.Set<Usuario>().Add(DadosDeTeste.NovoUsuario(email: "ana@email.com", cpf: "52998224725"));
+            await contexto.SaveChangesAsync();
+
+            contexto.Set<Usuario>().Add(DadosDeTeste.NovoUsuario(email: "ANA@EMAIL.COM", cpf: "58310472617"));
+
+            var numero = await NumeroDoErroSqlAsync(() => contexto.SaveChangesAsync());
+
+            Assert.Contains(numero, ViolacaoDeIndiceUnico);
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace api.Dtos.Livro
         [MaxLength(50, ErrorMessage = "O Idioma do livro deve conter no máximo 50 caracteres")]
         public string Idioma { get; set; } = string.Empty;
 
-        [Range(1, int.MaxValue, ErrorMessage = "")]
+        [Range(1, int.MaxValue, ErrorMessage = "Informe uma editora válida.")]
         public int EditoraId { get; set; }
 
         public List<int> CategoriaIds{ get; set; } = new();

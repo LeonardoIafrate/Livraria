@@ -6,7 +6,7 @@ using api.Services;
 using NSubstitute;
 using Xunit;
 
-namespace api.Tests
+namespace api.Tests.Services
 {
     public class PedidoServiceTests
     {
